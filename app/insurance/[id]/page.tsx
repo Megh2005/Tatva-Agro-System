@@ -60,6 +60,7 @@ interface InsuranceClaim {
     recommendation?: string;
     analysisCompletedAt?: string;
   };
+  reanalysisCount?: number;
   createdAt: string;
 }
 
@@ -159,10 +160,21 @@ export default function InsuranceDetailPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    let intervalId: any = null;
     if (status === "authenticated" && params?.id) {
       fetchClaim(params.id as string);
+      
+      // Auto-poll claim status every 3 seconds if calculation is in progress
+      intervalId = setInterval(() => {
+        if (claim && claim.aiAnalysis?.analysisStatus === "pending") {
+          fetchClaim(params.id as string);
+        }
+      }, 3000);
     }
-  }, [status, params?.id]);
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [status, params?.id, claim?.aiAnalysis?.analysisStatus]);
 
   const fetchClaim = async (id: string) => {
     try {
@@ -182,11 +194,12 @@ export default function InsuranceDetailPage() {
     setIsRetrying(true);
     try {
       const res = await fetch(`/api/insurance/${claim._id}/retry`, { method: "POST" });
-      if (!res.ok) throw new Error("Retry failed");
-      toast.success("AI Analysis restarted!");
-      fetchClaim(claim._id);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Retry failed");
+      toast.success("Reanalysis completed successfully!");
+      setClaim(data);
     } catch (err: any) {
-      toast.error(err.message || "Failed to restart AI analysis.");
+      toast.error(err.message || "Failed to run reanalysis.");
     } finally {
       setIsRetrying(false);
     }
@@ -203,7 +216,6 @@ export default function InsuranceDetailPage() {
   if (notFound || !claim) {
     return (
       <div className="flex flex-col h-screen items-center justify-center gap-4">
-        <Shield size={48} className="text-slate-300" />
         <h2 className="text-2xl font-bold text-slate-700">Claim Not Found</h2>
         <Link href="/insurance">
           <button className="mt-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
@@ -342,32 +354,14 @@ export default function InsuranceDetailPage() {
                       </div>
                     )}
 
-                    {/* Amount Cards */}
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="p-4 rounded-xl border-2 border-black bg-emerald-50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        <div className="flex items-center gap-1 text-emerald-600 mb-1">
-                          <IndianRupee size={14} />
-                          <span className="text-[10px] font-black uppercase tracking-wide">Estimated</span>
+                    {/* Payout Amount Card */}
+                    <div className="p-5 rounded-2xl border-2 border-black bg-emerald-50 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-emerald-600">
+                          <IndianRupee size={18} className="shrink-0" />
+                          <span className="text-xs font-black uppercase tracking-widest"> Expected compensation</span>
                         </div>
-                        <p className="text-xl font-black text-emerald-800">
-                          ₹{(claim.aiAnalysis.estimatedAmount || 0).toLocaleString("en-IN")}
-                        </p>
-                      </div>
-                      <div className="p-4 rounded-xl border-2 border-black bg-amber-50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        <div className="flex items-center gap-1 text-amber-600 mb-1">
-                          <Percent size={14} />
-                          <span className="text-[10px] font-black uppercase tracking-wide">Interest</span>
-                        </div>
-                        <p className="text-xl font-black text-amber-800">
-                          {claim.aiAnalysis.interestRate}%
-                        </p>
-                      </div>
-                      <div className="p-4 rounded-xl border-2 border-black bg-teal-50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                        <div className="flex items-center gap-1 text-teal-600 mb-1">
-                          <TrendingDown size={14} />
-                          <span className="text-[10px] font-black uppercase tracking-wide">Net Payout</span>
-                        </div>
-                        <p className="text-xl font-black text-teal-800">
+                        <p className="text-3xl font-black text-emerald-800 leading-none">
                           ₹{(claim.aiAnalysis.netPayableAmount || 0).toLocaleString("en-IN")}
                         </p>
                       </div>
@@ -400,6 +394,25 @@ export default function InsuranceDetailPage() {
                       </div>
                     )}
 
+                    {/* Reanalysis Action */}
+                    <div className="pt-4 flex items-center justify-between gap-3 border-t border-slate-100 flex-wrap">
+                      <div className="text-xs font-semibold text-slate-500">
+                        <span>Reanalyses run: <strong className="text-slate-800">{claim.reanalysisCount ?? 0} / 2</strong></span>
+                      </div>
+                      <button
+                        onClick={handleRetryAI}
+                        disabled={isRetrying || (claim.reanalysisCount ?? 0) >= 2}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-800 font-black text-xs border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isRetrying ? (
+                          <Loader2 size={13} className="animate-spin" />
+                        ) : (
+                          <RefreshCw size={13} />
+                        )}
+                        Request Reanalysis
+                      </button>
+                    </div>
+
                     <p className="text-[10px] text-slate-400 font-medium">
                       Analysis completed: {new Date(claim.aiAnalysis.analysisCompletedAt!).toLocaleString("en-IN")}
                     </p>
@@ -412,16 +425,19 @@ export default function InsuranceDetailPage() {
                     <div>
                       <p className="font-bold text-slate-800 text-lg">Calculation Failed</p>
                       <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-                        The mathematical model was unable to generate an assessment for this claim. Please try again.
+                        The AI surveyor was unable to generate an assessment for this claim.
+                      </p>
+                      <p className="text-xs font-bold text-slate-400 mt-2">
+                        Reanalyses run: {claim.reanalysisCount ?? 0} / 2
                       </p>
                     </div>
                     <button
                       onClick={handleRetryAI}
-                      disabled={isRetrying}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-800 font-bold text-sm border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
+                      disabled={isRetrying || (claim.reanalysisCount ?? 0) >= 2}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-800 font-bold text-sm border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isRetrying ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
-                      Retry Calculation
+                      Retry Reanalysis
                     </button>
                   </div>
                 ) : (

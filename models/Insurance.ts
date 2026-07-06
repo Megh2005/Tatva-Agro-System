@@ -87,6 +87,7 @@ const InsuranceSchema = new mongoose.Schema(
             recommendation: { type: String, default: null },
             analysisCompletedAt: { type: Date, default: null },
         },
+        reanalysisCount: { type: Number, default: 0 },
     },
     {
         timestamps: true,

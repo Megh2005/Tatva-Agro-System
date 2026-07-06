@@ -40,42 +40,55 @@ export async function POST(
             return NextResponse.json({ message: "Claim data is incomplete" }, { status: 400 });
         }
 
-        if (claim.aiAnalysis?.analysisStatus === "completed") {
-            return NextResponse.json({ message: "Analysis already completed" }, { status: 400 });
+        const reanalysisCount = claim.reanalysisCount || 0;
+        if (reanalysisCount >= 2) {
+            return NextResponse.json(
+                { message: "Reanalysis can be run only twice per claim." },
+                { status: 400 }
+            );
         }
 
-        // Set status back to pending
+        // Set status back to pending and increment reanalysis count
         await Insurance.findByIdAndUpdate(claim._id, {
             "aiAnalysis.analysisStatus": "pending",
+            $inc: { reanalysisCount: 1 },
         });
 
-        // Run mathematical analysis asynchronously
-        calculateInsurance({
-            state: claim.plotSnapshot.state,
-            city: claim.plotSnapshot.city,
-            areaAcres: claim.plotSnapshot.area,
-            calamityType: claim.calamityType,
-            calamityDescription: claim.calamityDescription,
-            damagedPercentage: claim.damagedPercentage,
-            damagedAreaSqm: claim.damagedAreaSqm,
-        })
-            .then(async (analysis) => {
-                await Insurance.findByIdAndUpdate(claim._id, {
+        // Run the analysis synchronously
+        try {
+            const analysis = await calculateInsurance({
+                state: claim.plotSnapshot.state,
+                city: claim.plotSnapshot.city,
+                areaAcres: claim.plotSnapshot.area,
+                calamityType: claim.calamityType,
+                calamityDescription: claim.calamityDescription,
+                damagedPercentage: claim.damagedPercentage,
+                damagedAreaSqm: claim.damagedAreaSqm,
+            });
+
+            const updatedClaim = await Insurance.findByIdAndUpdate(
+                claim._id,
+                {
                     aiAnalysis: {
                         analysisStatus: "completed",
                         ...analysis,
                         analysisCompletedAt: new Date(),
                     },
-                });
-            })
-            .catch(async (err) => {
-                console.error("Insurance calculation retry failed:", err);
-                await Insurance.findByIdAndUpdate(claim._id, {
-                    "aiAnalysis.analysisStatus": "failed",
-                });
-            });
+                },
+                { new: true }
+            );
 
-        return NextResponse.json({ message: "Retry initiated" }, { status: 200 });
+            return NextResponse.json(updatedClaim, { status: 200 });
+        } catch (calcError: any) {
+            console.error("Reanalysis calculation failed:", calcError);
+            await Insurance.findByIdAndUpdate(claim._id, {
+                "aiAnalysis.analysisStatus": "failed",
+            });
+            return NextResponse.json(
+                { message: "Calculation failed", error: calcError.message },
+                { status: 500 }
+            );
+        }
     } catch (error: any) {
         console.error("Error retrying insurance calculation:", error);
         return NextResponse.json(
