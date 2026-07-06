@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import {
   Card,
@@ -44,7 +45,67 @@ interface AnalysisResult {
   inputImage: string;
 }
 
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+};
+
+function generateDiscolourationEmailHtml(stats: AnalysisStats) {
+  return `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333333; max-width: 600px; margin: 0 auto; padding: 20px; border: 2px solid #000000; border-radius: 12px; background-color: #ffffff; box-shadow: 4px 4px 0px 0px #000000;">
+      <div style="border-bottom: 2px solid #000000; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="color: #ea580c; margin: 0; font-size: 24px; font-weight: 800; text-transform: uppercase;">
+          ⚠️ Autonomous Discolouration Alert
+        </h1>
+        <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+          Tatva Agro Crop Diagnostics
+        </p>
+      </div>
+
+      <div style="background-color: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <p style="margin: 0; font-size: 14px; color: #9b2c2c; font-weight: bold;">
+          Critical Stress Detected in Crop Canopy!
+        </p>
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #742a2a;">
+          Foliar discolouration has reached <strong>${stats.stressedPercent.toFixed(1)}%</strong>, which exceeds your safe threshold of 5%.
+        </p>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin: 0 0 12px 0; text-transform: uppercase; color: #1f2937;">
+          🌾 Canopy Metrics
+        </h3>
+        <p style="margin: 6px 0; font-size: 13px;"><strong>Stressed / Discoloured:</strong> <span style="color: #ef4444; font-weight: bold;">${stats.stressedPercent.toFixed(1)}%</span>${stats.stressedAreaM2 ? ` (${stats.stressedAreaM2.toFixed(1)} m²)` : ""}</p>
+        <p style="margin: 6px 0; font-size: 13px;"><strong>Healthy Foliage:</strong> <span style="color: #10b981; font-weight: bold;">${stats.healthyPercent.toFixed(1)}%</span>${stats.healthyAreaM2 ? ` (${stats.healthyAreaM2.toFixed(1)} m²)` : ""}</p>
+        <p style="margin: 6px 0; font-size: 13px;"><strong>Empty/Soil Area:</strong> ${stats.emptyPercent.toFixed(1)}%${stats.emptyAreaM2 ? ` (${stats.emptyAreaM2.toFixed(1)} m²)` : ""}</p>
+      </div>
+
+      <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <h3 style="margin: 0 0 8px 0; font-size: 13px; color: #4b5563; text-transform: uppercase;">📋 Recommendations</h3>
+        <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #4b5563; line-height: 1.5;">
+          <li>Review irrigation/soil moisture logs for overwatering or drought signs.</li>
+          <li>Check nitrogen applications (both excess and deficiency can trigger discolouration).</li>
+          <li>Scout the field location shown in the attached scan for pathogens, mold, or insect nesting.</li>
+        </ul>
+      </div>
+
+      <p style="font-size: 12px; color: #6b7280; font-style: italic; margin-top: 15px;">
+        Please find the original image analyzed by the platform attached to this email.
+      </p>
+
+      <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 25px; text-align: center; font-size: 11px; color: #9ca3af;">
+        This alert was sent automatically by Tatva Agro AI. © ${new Date().getFullYear()} Tatva Team.
+      </div>
+    </div>
+  `;
+}
+
 export default function DiscolourationToolPage() {
+  const { data: session } = useSession();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fieldArea, setFieldArea] = useState<string>("");
@@ -90,6 +151,73 @@ export default function DiscolourationToolPage() {
 
       setResult(data);
       toast.success("Analysis complete!");
+
+      // Autonomous Email alert: exceeds 5% stressed foliage
+      if (data.stats.stressedPercent > 5 && session?.user?.email) {
+        const toastId = toast.loading("⏳ Discolouration > 5%! Sending alert in 10s...");
+        
+        let secondsLeft = 10;
+        const intervalId = setInterval(() => {
+          secondsLeft--;
+          if (secondsLeft > 0) {
+            toast.update(toastId, {
+              render: `Discolouration > 5%! Sending alert in ${secondsLeft}s...`,
+              type: "warning",
+              isLoading: true,
+            });
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 1000);
+
+        const emailAction = async () => {
+          // Wait 10 seconds (countdown phase)
+          await new Promise((resolve) => setTimeout(resolve, 10000));
+          
+          const dataUrl = await fileToBase64(selectedFile);
+          const htmlContent = generateDiscolourationEmailHtml(data.stats);
+          
+          const res = await fetch("/api/send-mail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              to: session.user.email,
+              subject: `⚠️ Autonomous Alert: High Canopy Discolouration Detected (${data.stats.stressedPercent.toFixed(1)}%)`,
+              html: htmlContent,
+              attachments: [
+                {
+                  filename: selectedFile.name || "field_analysis.jpg",
+                  path: dataUrl
+                }
+              ]
+            })
+          });
+          
+          const mailData = await res.json();
+          if (!res.ok || !mailData.success) {
+            throw new Error(mailData.error || "Email failed");
+          }
+          return mailData;
+        };
+
+        toast.promise(
+          emailAction(),
+          {
+            pending: "✉️ Sending alert email...",
+            success: "Autonomous crop discolouration alert email sent! ✉️",
+            error: {
+              render({ data }) {
+                return `Failed to send alert: ${(data as Error)?.message || "Unknown error"}`;
+              }
+            }
+          },
+          {
+            toastId: toastId
+          }
+        ).catch(err => {
+          console.error("Promise toast caught error:", err);
+        });
+      }
     } catch (error: any) {
       console.error("Analysis Error:", error);
       toast.error(error.message || "Failed to analyze image.");

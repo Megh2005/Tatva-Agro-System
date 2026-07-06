@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   RiHome5Line,
   RiHome5Fill,
-  RiUser3Line,
-  RiUser3Fill,
   RiMapPinRangeLine,
   RiMapPinRangeFill,
   RiMapPinAddLine,
   RiMapPinAddFill,
   RiCpuLine,
   RiCpuFill,
-  RiTempHotLine,
-  RiTempHotFill,
   RiScales3Line,
   RiScales3Fill,
+  RiTempHotLine,
+  RiTempHotFill,
+  RiUser3Line,
+  RiUser3Fill,
   RiLoginBoxLine,
   RiLogoutBoxLine,
   RiBugLine,
@@ -58,22 +58,6 @@ export default function Navigation() {
       show: true,
     },
     {
-      name: "About",
-      shortName: "About",
-      icon: RiInformationLine,
-      iconFilled: RiInformationFill,
-      href: "/about",
-      show: true,
-    },
-    {
-      name: "Contact",
-      shortName: "Support",
-      icon: RiCustomerService2Line,
-      iconFilled: RiCustomerService2Fill,
-      href: "/contact",
-      show: true,
-    },
-    {
       name: "My Plots",
       shortName: "Plots",
       icon: RiMapPinRangeLine,
@@ -90,8 +74,8 @@ export default function Navigation() {
       show: status === "authenticated",
     },
     {
-      name: "Crop Scan",
-      shortName: "Crop Scan",
+      name: "Discoloration",
+      shortName: "Discoloration",
       icon: RiCpuLine,
       iconFilled: RiCpuFill,
       href: "/tools/discolouration",
@@ -122,6 +106,14 @@ export default function Navigation() {
       show: status === "authenticated",
     },
     {
+      name: "Insurance",
+      shortName: "Insure",
+      icon: RiUmbrellaLine,
+      iconFilled: RiUmbrellaFill,
+      href: "/insurance",
+      show: status === "authenticated",
+    },
+    {
       name: "Profile",
       shortName: "Profile",
       icon: RiUser3Line,
@@ -130,12 +122,20 @@ export default function Navigation() {
       show: status === "authenticated",
     },
     {
-      name: "Insurance",
-      shortName: "Insure",
-      icon: RiUmbrellaLine,
-      iconFilled: RiUmbrellaFill,
-      href: "/insurance",
-      show: status === "authenticated",
+      name: "About",
+      shortName: "About",
+      icon: RiInformationLine,
+      iconFilled: RiInformationFill,
+      href: "/about",
+      show: true,
+    },
+    {
+      name: "Contact",
+      shortName: "Support",
+      icon: RiCustomerService2Line,
+      iconFilled: RiCustomerService2Fill,
+      href: "/contact",
+      show: true,
     },
     {
       name: "Login",
@@ -154,7 +154,6 @@ export default function Navigation() {
       className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
       ref={dockRef}
     >
-
       {/* Dock Container */}
       <motion.div
         initial={{ y: 80, opacity: 0 }}
@@ -164,7 +163,7 @@ export default function Navigation() {
       >
         {activeItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-          const Icon = item.icon;
+          const Icon = isActive ? item.iconFilled : item.icon;
 
           return (
             <Link
@@ -178,82 +177,31 @@ export default function Navigation() {
               <AnimatePresence>
                 {hovered === item.name && (
                   <motion.div
-                    key={item.name}
-                    initial={{ opacity: 0, y: 4, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 4, scale: 0.9 }}
-                    transition={{ duration: 0.12 }}
-                    className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-slate-900 text-white text-sm font-bold px-3 py-1.5 rounded-lg shadow-xl pointer-events-none border border-slate-700 z-10"
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 px-3 py-1.5 rounded-lg bg-black text-white text-[10px] font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap pointer-events-none"
                   >
                     {item.name}
-                    <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 border-4 border-transparent border-t-slate-900" />
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <motion.div
-                whileTap={{ scale: 0.88 }}
-                whileHover={{ scale: 1.12, y: -3 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              {/* Icon button */}
+              <div
                 className={cn(
-                  "relative flex items-center justify-center w-16 h-12 rounded-xl transition-colors duration-200",
+                  "p-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center",
                   isActive
-                    ? "text-orange-500"
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-slate-900 text-white scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                    : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                 )}
               >
-                <Icon size={26} />
-
-                {/* Active dot */}
-                {isActive && (
-                  <motion.div
-                    layoutId="active-dot"
-                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </motion.div>
+                <Icon className="w-5 h-5" />
+              </div>
             </Link>
           );
         })}
-
-        {/* Divider before logout */}
-        {status === "authenticated" && (
-          <>
-            <div className="w-px h-8 bg-slate-200 mx-1" />
-            <button
-              onClick={() => signOut()}
-              onMouseEnter={() => setHovered("Logout")}
-              onMouseLeave={() => setHovered("")}
-              className="group relative"
-            >
-              {/* Logout tooltip */}
-              <AnimatePresence>
-                {hovered === "Logout" && (
-                  <motion.div
-                    key="logout-tip"
-                    initial={{ opacity: 0, y: 4, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 4, scale: 0.9 }}
-                    transition={{ duration: 0.12 }}
-                    className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl pointer-events-none border border-slate-700 z-10"
-                  >
-                    Logout
-                    <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 border-4 border-transparent border-t-slate-900" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <motion.div
-                whileTap={{ scale: 0.88 }}
-                whileHover={{ scale: 1.12, y: -3 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="flex items-center justify-center w-16 h-12 rounded-xl text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
-              >
-                <RiLogoutBoxLine size={26} />
-              </motion.div>
-            </button>
-          </>
-        )}
       </motion.div>
     </div>
   );
