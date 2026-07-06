@@ -140,53 +140,46 @@ The AI verifies all uploaded images before processing the insurance claim.
 - Automatic Image Optimization
 
 ---
+## 🏗 System Architecture
 
-# 🏗 Architecture
+```mermaid
+flowchart TB
 
-```text
+A[👨 Farmer]
 
-                        Farmer
+A --> B[Next.js Frontend]
 
-                           │
+B --> C[Authentication]
 
-                           ▼
+B --> D[Insurance Module]
 
-                 Next.js Frontend (React)
+B --> E[AI Chatbot]
 
-                           │
+B --> F[Government Schemes]
 
-            ┌──────────────┼───────────────┐
+C --> G[NextAuth]
 
-            │              │                    │
+G --> H[(MongoDB)]
 
-            ▼              ▼                   ▼
+D --> I[Upload Images]
 
-      Authentication    Insurance      AI Assistant
+I --> J[Cloudinary]
 
-            │               │               │
+J --> K[Gemini Vision AI]
 
-            ▼              ▼               ▼
+K --> L[Damage Assessment]
 
-        NextAuth       Image Upload      Gemini API
+L --> M[Insurance Verification]
 
-            │               │
+M --> H
 
-            ▼              ▼
+E --> N[Gemini API]
 
-         MongoDB      Cloudinary
+N --> O[Agriculture Knowledge]
 
-             │
+O --> H
 
-             ▼
-
-      AI Claim Processing
-
-             │
-
-             ▼
-
-      Insurance Dashboard
-
+F --> H
 ```
 
 ---
