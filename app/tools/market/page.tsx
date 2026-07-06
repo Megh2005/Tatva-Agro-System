@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { CROPS_CATALOGUE } from "@/lib/crops";
 import { T } from "@/components/TranslationContext";
+import { motion, AnimatePresence } from "framer-motion";
 import SpeechButton from "@/components/SpeechButton";
 import YouTubeVideos from "@/components/YouTubeVideos";
 
@@ -296,8 +297,15 @@ export default function MarketPredictionPage() {
                   </div>
                 )}
 
-                {result && !isCalculating && (
-                  <div className="space-y-4 animate-in fade-in duration-500">
+                <AnimatePresence>
+                  {result && !isCalculating && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 2.0, ease: "easeOut" }}
+                      className="space-y-4"
+                    >
                     <div className="bg-sky-50/50 border-2 border-black rounded-xl p-4">
                       <p className="text-sm font-semibold text-slate-700 italic leading-relaxed">
                         "<T>{result.summary}</T>"
@@ -363,8 +371,9 @@ export default function MarketPredictionPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </CardContent>
             </Card>
           </div>

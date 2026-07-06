@@ -469,9 +469,16 @@ export default function DiseaseDiagnosticsPage() {
               )}
 
               {/* Active Tab Content */}
-              {result && !isAnalyzing && (
-                <div className="space-y-4">
-                  <AnimatePresence mode="wait">
+              <AnimatePresence>
+                {result && !isAnalyzing && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 2.0, ease: "easeOut" }}
+                    className="space-y-4"
+                  >
+                    <AnimatePresence mode="wait">
                     {/* Tab 1: Diagnosis */}
                     {activeTab === "diagnosis" && (
                       <motion.div
@@ -652,9 +659,10 @@ export default function DiseaseDiagnosticsPage() {
                         </div>
                       </motion.div>
                     )}
-                  </AnimatePresence>
-                </div>
-              )}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </CardContent>
           </Card>
         </div>

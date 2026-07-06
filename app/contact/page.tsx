@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Send, MapPin, Phone, Mail, User, AlertCircle, Building } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import { indianStatesAndCities } from "@/lib/states";
 import { toast } from "react-toastify";
@@ -16,45 +17,85 @@ export default function ContactPage() {
     problem: "",
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Derived available cities
   const availableCities = formData.state ? indianStatesAndCities[formData.state] || [] : [];
 
+  const validateField = (name: string, value: string): string => {
+    switch (name) {
+      case "name":
+        if (!value.trim()) return "Full name is required.";
+        return "";
+      case "state":
+        if (!value) return "Please select a state.";
+        return "";
+      case "city":
+        if (!value) return "Please select a city.";
+        return "";
+      case "mobile":
+        const mobileRegex = /^[6-9]\d{9}$/;
+        if (!value) return "Mobile number is required.";
+        if (!mobileRegex.test(value)) return "Please enter a valid 10-digit Indian mobile number starting with 6-9.";
+        return "";
+      case "email":
+        if (!value) return "Email address is required.";
+        if (!value.toLowerCase().endsWith("@gmail.com")) return "Please provide a valid Gmail address (ending with @gmail.com).";
+        return "";
+      case "problem":
+        if (!value.trim()) return "Please describe your concern.";
+        return "";
+      default:
+        return "";
+    }
+  };
+
   const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const stateVal = e.target.value;
     setFormData({
       ...formData,
-      state: e.target.value,
+      state: stateVal,
       city: "", // Reset city when state changes
     });
+    setErrors((prev) => ({
+      ...prev,
+      state: stateVal ? "" : "Please select a state.",
+      city: "Please select a city.",
+    }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    // Real-time inline validation
+    const errorMsg = validateField(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: errorMsg,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validations
-    if (!formData.name || !formData.state || !formData.city || !formData.problem) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
+    // Trigger full validation
+    const newErrors: Record<string, string> = {};
+    Object.keys(formData).forEach((key) => {
+      const val = formData[key as keyof typeof formData];
+      const errorMsg = validateField(key, val);
+      if (errorMsg) {
+        newErrors[key] = errorMsg;
+      }
+    });
 
-    // Gmail validation
-    if (!formData.email.toLowerCase().endsWith("@gmail.com")) {
-      toast.error("Please provide a valid Gmail address (ending with @gmail.com).");
-      return;
-    }
+    setErrors(newErrors);
 
-    // Indian Mobile validation (starts with 6-9 and exactly 10 digits)
-    const mobileRegex = /^[6-9]\d{9}$/;
-    if (!mobileRegex.test(formData.mobile)) {
-      toast.error("Please provide a valid 10-digit Indian mobile number.");
+    if (Object.values(newErrors).some((err) => err !== "")) {
+      toast.error("Please correct the errors in the form before submitting.");
       return;
     }
 
@@ -80,6 +121,7 @@ export default function ContactPage() {
           email: "",
           problem: "",
         });
+        setErrors({});
       } else {
         toast.error("Failed to send message. Please try again later.");
       }
@@ -97,7 +139,12 @@ export default function ContactPage() {
       <div className="w-full max-w-4xl z-10 relative mt-10">
         
         {/* Header Section */}
-        <div className="text-center mb-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2.0, ease: "easeOut" }}
+          className="text-center mb-10"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full border-2 border-black bg-blue-100 text-blue-800 font-black text-sm uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
             <span>Support</span>
           </div>
@@ -107,10 +154,15 @@ export default function ContactPage() {
           <p className="mx-auto mt-2 text-lg sm:text-xl text-slate-700 font-bold max-w-2xl leading-relaxed">
             Facing any issues with our platform? Reach out to our support team and we will assist you right away.
           </p>
-        </div>
+        </motion.div>
 
         {/* Contact Form Card */}
-        <div className="border-2 border-black rounded-3xl bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2.0, ease: "easeOut", delay: 0.15 }}
+          className="border-2 border-black rounded-3xl bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
+        >
           <div className="bg-linear-to-r from-blue-500 via-indigo-500 to-purple-600 h-3 w-full border-b-2 border-black" />
           
           <div className="p-6 sm:p-10">
@@ -129,8 +181,20 @@ export default function ContactPage() {
                   onChange={handleChange}
                   placeholder="Enter your full name"
                   className="w-full border-2 border-black rounded-xl p-4 bg-slate-50 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 transition-all text-base font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                  required
                 />
+                <AnimatePresence>
+                  {errors.name && (
+                    <motion.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="text-xs font-bold text-red-600 flex items-center gap-1 mt-1 pl-1"
+                    >
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {errors.name}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Location (State & City) */}
@@ -145,13 +209,25 @@ export default function ContactPage() {
                     value={formData.state}
                     onChange={handleStateChange}
                     className="w-full border-2 border-black rounded-xl p-4 bg-slate-50 outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all text-base font-bold text-slate-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
-                    required
                   >
                     <option value="" disabled>Select State</option>
                     {Object.keys(indianStatesAndCities).sort().map((state) => (
                       <option key={state} value={state}>{state}</option>
                     ))}
                   </select>
+                  <AnimatePresence>
+                    {errors.state && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-xs font-bold text-red-600 flex items-center gap-1 mt-1 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {errors.state}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="space-y-2">
@@ -165,13 +241,25 @@ export default function ContactPage() {
                     onChange={handleChange}
                     disabled={!formData.state}
                     className="w-full border-2 border-black rounded-xl p-4 bg-slate-50 outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all text-base font-bold text-slate-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-                    required
                   >
                     <option value="" disabled>Select City</option>
                     {availableCities.map((city) => (
                       <option key={city} value={city}>{city}</option>
                     ))}
                   </select>
+                  <AnimatePresence>
+                    {errors.city && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-xs font-bold text-red-600 flex items-center gap-1 mt-1 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {errors.city}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -190,9 +278,22 @@ export default function ContactPage() {
                     placeholder="10-digit mobile number"
                     maxLength={10}
                     className="w-full border-2 border-black rounded-xl p-4 bg-slate-50 outline-none focus:bg-white focus:ring-4 focus:ring-orange-500/20 transition-all text-base font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                    required
                   />
-                  <p className="text-xs font-bold text-slate-500">Must be a valid Indian number (e.g. 9876543210).</p>
+                  <AnimatePresence>
+                    {errors.mobile ? (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-xs font-bold text-red-600 flex items-center gap-1 mt-1 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {errors.mobile}
+                      </motion.p>
+                    ) : (
+                      <p className="text-xs font-bold text-slate-500 pl-1">Must be a valid Indian number (e.g. 9876543210).</p>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="space-y-2">
@@ -207,9 +308,22 @@ export default function ContactPage() {
                     onChange={handleChange}
                     placeholder="yourname@gmail.com"
                     className="w-full border-2 border-black rounded-xl p-4 bg-slate-50 outline-none focus:bg-white focus:ring-4 focus:ring-orange-500/20 transition-all text-base font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                    required
                   />
-                  <p className="text-xs font-bold text-slate-500">Must be a @gmail.com address.</p>
+                  <AnimatePresence>
+                    {errors.email ? (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-xs font-bold text-red-600 flex items-center gap-1 mt-1 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {errors.email}
+                      </motion.p>
+                    ) : (
+                      <p className="text-xs font-bold text-slate-500 pl-1">Must be a @gmail.com address.</p>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -226,8 +340,20 @@ export default function ContactPage() {
                   placeholder="How can we help you?"
                   rows={5}
                   className="w-full border-2 border-black rounded-xl p-4 bg-slate-50 outline-none focus:bg-white focus:ring-4 focus:ring-purple-500/20 transition-all text-base font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] resize-y"
-                  required
                 />
+                <AnimatePresence>
+                  {errors.problem && (
+                    <motion.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="text-xs font-bold text-red-600 flex items-center gap-1 mt-1 pl-1"
+                    >
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {errors.problem}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div className="pt-4">
@@ -252,7 +378,7 @@ export default function ContactPage() {
 
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

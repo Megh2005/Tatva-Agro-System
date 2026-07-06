@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { motion, AnimatePresence } from "framer-motion";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import {
   Card,
@@ -378,8 +379,15 @@ export default function DiscolourationToolPage() {
                 </div>
               )}
 
-              {result && !isAnalyzing && (
-                <div className="space-y-4 animate-in fade-in duration-500">
+              <AnimatePresence>
+                {result && !isAnalyzing && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 2.0, ease: "easeOut" }}
+                    className="space-y-4"
+                  >
                   {/* Stat Tiles */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {/* Healthy */}
@@ -472,8 +480,9 @@ export default function DiscolourationToolPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
+            </AnimatePresence>
             </CardContent>
           </Card>
         </div>

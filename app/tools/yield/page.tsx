@@ -35,6 +35,7 @@ import {
 import { getCityPh, type CityPh } from "@/lib/soil-ph";
 import { CROPS_CATALOGUE } from "@/lib/crops";
 import { T } from "@/components/TranslationContext";
+import { motion, AnimatePresence } from "framer-motion";
 import SpeechButton from "@/components/SpeechButton";
 import YouTubeVideos from "@/components/YouTubeVideos";
 
@@ -678,9 +679,15 @@ export default function YieldEstimationPage() {
                   </div>
                 )}
 
-                {/* Results */}
-                {result && !isCalculating && (
-                  <div className="space-y-7 animate-in fade-in duration-500">
+                <AnimatePresence>
+                  {result && !isCalculating && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 2.0, ease: "easeOut" }}
+                      className="space-y-7"
+                    >
                     {/* Stat tiles */}
                     <div className="grid grid-cols-2 gap-3">
                       {[
@@ -744,8 +751,9 @@ export default function YieldEstimationPage() {
                         <CheckCircle2 className="w-4 h-4" /> View AI Action Plan
                       </button>
                     </div>
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </CardContent>
             </Card>
           </div>
