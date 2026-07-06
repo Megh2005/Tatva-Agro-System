@@ -14,13 +14,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Google API Key is not configured." }, { status: 500 });
     }
 
+    // Support both single string and array of strings
+    const queries = Array.isArray(text) ? text : [text];
+
     const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${apiKey}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        q: [text],
+        q: queries,
         target: target,
       }),
     });
@@ -32,9 +35,12 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await res.json();
-    const translatedText = data?.data?.translations?.[0]?.translatedText || text;
+    const translations = data?.data?.translations || [];
+    const translatedTexts = translations.map((t: any) => t.translatedText);
 
-    return NextResponse.json({ translatedText });
+    return NextResponse.json({
+      translatedText: Array.isArray(text) ? translatedTexts : (translatedTexts[0] || text),
+    });
   } catch (err: any) {
     console.error("Translation error:", err);
     return NextResponse.json({ error: err.message || "Unknown translation error" }, { status: 500 });

@@ -130,7 +130,7 @@ export default function DiscolourationToolPage() {
           </h1>
           <p className="mx-auto max-w-[65vw] text-lg sm:text-xl text-slate-500 font-medium tracking-tight mt-1">
             Detect discolouration and assess the health of your{" "}
-            <span className="font-bold bg-linear-to-r from-emerald-650 to-teal-650 bg-clip-text text-transparent">
+            <span className="font-bold bg-linear-to-r capitalize from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               rice fields
             </span>
             .

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
         const prompt = `
 You are an expert agricultural claims assistant in India. A farmer has provided a rough, scattered description of crop damage caused by "${calamityType}".

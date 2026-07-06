@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       throw new Error("GEMINI_API_KEY is not configured");
     }
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     // 2. Prompt Gemini for real-time market data
     const prompt = `
@@ -58,7 +58,7 @@ Provide sensible, realistic real-time estimates for the following parameters in 
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-    
+
     // Parse the JSON output from Gemini
     const jsonString = responseText.replace(/```json\n?|\n?```/g, "").trim();
     const aiData = JSON.parse(jsonString);
@@ -79,7 +79,7 @@ Provide sensible, realistic real-time estimates for the following parameters in 
         MU * Md +
         GAMMA * Rf +
         DELTA * (Ci / 10));
-      
+
     // Equation 2: Profitability
     // Pi = (P_future * Y_pred) - C_total
     const profitability = predictedPrice * Number(estimatedYield) - Number(totalCost);
@@ -88,7 +88,7 @@ Provide sensible, realistic real-time estimates for the following parameters in 
     // R_a = Pi / sigma_m
     const sigma_m = Md > 0 ? 1.5 : Md < 0 ? 2.5 : 1.2;
     const riskAdjustedProfit = profitability / sigma_m;
-    
+
     // Determine if the crop is sellable
     let sellableStatus = "Yes";
     if (profitability <= 0 || Md < 0) {
