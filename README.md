@@ -261,43 +261,42 @@ StoreMongoDB --> Dashboard
 Dashboard --> ClaimStatus
 ```
 ---
+## 🤖 Gemini AI Decision Engine
 
-# 🤖 AI Workflow
+```mermaid
+graph TD
 
-```text
+Images --> Gemini
 
-User Question
+Description --> Gemini
 
-      │
+PlotDetails --> Gemini
 
-      ▼
+Weather --> Gemini
 
-Gemini API
+SatelliteData --> Gemini
 
-      │
+Gemini --> CropDisease
 
-      ▼
+Gemini --> FloodDetection
 
-Context Processing
+Gemini --> FireDamage
 
-      │
+Gemini --> Drought
 
-      ▼
+Gemini --> PestAttack
 
-Agriculture Knowledge
+CropDisease --> FinalConfidence
 
-      │
+FloodDetection --> FinalConfidence
 
-      ▼
+FireDamage --> FinalConfidence
 
-Response Generation
+Drought --> FinalConfidence
 
-      │
+PestAttack --> FinalConfidence
 
-      ▼
-
-Farmer
-
+FinalConfidence --> ClaimStatus
 ```
 
 ---
@@ -357,77 +356,120 @@ MongoDB-->>Backend: Success
 Backend-->>Farmer: Claim Submitted
 ```
 ---
-## 🧩 Component Dependency
+## 🌍 Business Overview
 
-```mermaid
-graph TD
+Tatva is an AI-powered smart agriculture platform designed to bridge the gap between farmers, technology, and insurance providers. The platform digitizes land registration, crop monitoring, weather intelligence, and insurance claim processing into a single ecosystem.
 
-App
+Unlike traditional agricultural platforms, Tatva leverages Artificial Intelligence, satellite-assisted monitoring, and secure cloud infrastructure to minimize fraudulent claims while ensuring faster claim settlements for genuine farmers.
 
-App --> Authentication
-
-App --> Dashboard
-
-App --> Weather
-
-App --> Insurance
-
-App --> Profile
-
-Insurance --> Camera
-
-Insurance --> Gemini
-
-Insurance --> Cloudinary
-
-Dashboard --> Charts
-
-Dashboard --> WeatherCard
-
-Dashboard --> PlotCard
-
-Dashboard --> InsuranceStatus
-
-Profile --> NextAuth
-
-Profile --> MongoDB
-```
----
-
-# 📷 Screenshots
-
-## Landing Page
-
-```
-/screenshots/home.png
-```
-
-## Dashboard
-
-```
-/screenshots/dashboard.png
-```
-
-## Insurance
-
-```
-/screenshots/insurance.png
-```
-
-## Chatbot
-
-```
-/screenshots/chatbot.png
-```
-
-## Farm Registration
-
-```
-/screenshots/farm.png
-```
+The primary objective is to improve transparency, reduce manual verification efforts, and provide timely financial assistance to farmers affected by natural calamities.
 
 ---
+## 👥 Consumer Section
 
+Tatva serves multiple stakeholders across the agricultural ecosystem.
+
+### 👨‍🌾 Farmers
+- Register agricultural plots digitally.
+- Monitor crop conditions.
+- Receive weather forecasts.
+- Submit insurance claims with AI verification.
+- Track claim approval status.
+
+### 🏛 Government Authorities
+- Monitor insurance claims.
+- Reduce fraudulent applications.
+- Generate district-wise agricultural reports.
+- Improve subsidy distribution.
+
+### 🏢 Insurance Providers
+- Automated claim verification.
+- AI-assisted damage assessment.
+- Faster settlement process.
+- Reduced operational cost.
+
+### 🌱 Agricultural Researchers
+- Crop damage analytics.
+- Weather impact studies.
+- Satellite vegetation monitoring.
+- Regional agricultural insights.
+---
+
+## 💰 Revenue Model
+
+Tatva follows a hybrid B2B + B2G + SaaS business model.
+
+| Revenue Stream | Description |
+|---------------|-------------|
+| Government Licensing | Annual deployment for state agriculture departments |
+| Insurance Partnerships | AI claim verification subscription |
+| Enterprise Dashboard | Analytics for agribusiness companies |
+| Premium Farmer Services | Personalized AI recommendations |
+| API Services | Weather and satellite analytics APIs |
+| Data Insights | Anonymous agricultural reports for research organizations |
+
+Future monetization may also include IoT integrations, drone monitoring subscriptions, and AI-powered crop advisory services.
+
+---
+## 📈 Marketing & Scaling Strategy
+
+### Phase 1
+- Pilot deployment in selected districts.
+- Partner with local farmer cooperatives.
+- Collaborate with agricultural universities.
+
+### Phase 2
+- Government partnerships under PMFBY.
+- Insurance company integration.
+- Regional language support.
+
+### Phase 3
+- Nationwide deployment.
+- Mobile application launch.
+- AI-powered farming assistant.
+- International expansion to developing agricultural economies.
+---
+## ❤️ Customer Retention
+
+Tatva focuses on long-term farmer engagement through continuous value delivery.
+
+- Personalized crop recommendations.
+- Seasonal weather alerts.
+- Insurance renewal reminders.
+- AI-powered disease detection.
+- Historical crop analytics.
+- Loyalty rewards for consistent usage.
+- Community discussion forums.
+- Regional language support.
+---
+## 🎯 Value Proposition
+
+### Farmers
+
+- Faster insurance processing
+- Accurate weather updates
+- Secure land registration
+- AI-assisted crop monitoring
+
+### Government
+
+- Transparent subsidy management
+- Reduced fraud
+- Digital agricultural records
+
+### Insurance Companies
+
+- Lower verification costs
+- Automated fraud detection
+- Faster settlements
+
+### Society
+
+- Improved food security
+- Digital agriculture ecosystem
+- Better disaster response
+
+---
 # 📦 Installation
 
 Clone the repository
@@ -485,21 +527,49 @@ CLOUDINARY_API_SECRET=
 ```
 
 ---
+## ♿ Accessibility
 
-# 🎯 Future Scope
+Tatva aims to make digital agriculture accessible to every farmer.
 
-- Drone Monitoring
-- IoT Sensor Integration
-- Satellite Crop Analysis
-- AI Disease Detection
-- Blockchain Land Records
-- Marketplace for Farmers
-- Weather Prediction
-- Voice Assistant
-- Regional Language Support
-- AI Yield Prediction
+Current Features
 
+- Responsive mobile interface
+- Large touch-friendly buttons
+- High contrast UI
+- Simple navigation
+- Google Authentication
+- Error validation
+- AI-assisted text enhancement
+
+Future Improvements
+
+- Voice navigation
+- Regional language support
+- Screen reader compatibility
+- Offline mode
+- Voice-based insurance filing
+- AI chatbot with multilingual support
 ---
+
+## 🌟 User Experience
+
+Tatva has been designed with simplicity and accessibility as the primary goals.
+
+### Design Principles
+
+- Clean and distraction-free interface.
+- Mobile-first responsive design.
+- Minimal learning curve.
+- One-click authentication.
+- Guided insurance claim process.
+- AI-assisted form completion.
+- Real-time feedback.
+- Modern animations for better engagement.
+
+The interface minimizes technical complexity so that farmers with limited digital literacy can comfortably navigate the platform.
+
+----
+
 ## 🌟 Why Tatva?
 
 ✔ AI-powered insurance verification
@@ -637,19 +707,7 @@ erDiagram
     INSURANCE_CLAIM ||--|| AI_ANALYSIS : analysed_by
 ```
 
----
-
-# 🤝 Contributing
-
-Contributions are welcome!
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push the branch
-5. Open a Pull Request
-
----
+----
 
 # 👨‍💻 Developer
 
@@ -660,24 +718,9 @@ https://github.com/Megh2005
 
 ---
 
-# ⭐ Support
-
-If you found this project useful,
-
-⭐ Star this repository
-
-🍴 Fork it
-
-🐞 Report Issues
-
-💡 Suggest Features
-
----
-
 <div align="center">
 
 ### 🌾 Building the Future of Smart Agriculture with Artificial Intelligence 🌾
 
-Made with ❤️ using Next.js, Gemini AI and MongoDB.
 
 </div>
