@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Initialize Gemini 2.5 Flash
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
     // 2. Format image part for Gemini multimodal request
     const imagePart = {

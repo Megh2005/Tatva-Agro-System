@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Play, Youtube, Loader2, Calendar, Tv } from "lucide-react";
+import { Play, Youtube, Loader2, Calendar, Tv, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { T } from "./TranslationContext";
 
@@ -23,6 +23,7 @@ export default function YouTubeVideos({ query, title = "Helpful Video Tutorials"
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!query) return;
@@ -60,7 +61,7 @@ export default function YouTubeVideos({ query, title = "Helpful Video Tutorials"
     return (
       <div className="w-full py-6 space-y-4">
         <h4 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
-          <Youtube className="w-5 h-5 text-rose-650 animate-pulse" />
+          <Youtube className="w-5 h-5 text-rose-655 animate-pulse" />
           <T>{title}</T>
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -85,7 +86,7 @@ export default function YouTubeVideos({ query, title = "Helpful Video Tutorials"
     <div className="w-full py-6 space-y-4">
       <div className="flex items-center justify-between border-b-2 border-black pb-2">
         <h4 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
-          <Youtube className="w-5 h-5 text-red-600" />
+          <Youtube className="w-5 h-5 text-red-605" />
           <T>{title}</T>
         </h4>
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 border border-black px-2.5 py-0.5 rounded-md">
@@ -95,12 +96,10 @@ export default function YouTubeVideos({ query, title = "Helpful Video Tutorials"
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {videos.map((vid) => (
-          <a
+          <div
             key={vid.id}
-            href={`https://www.youtube.com/watch?v=${vid.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group block border-2 border-black rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all"
+            onClick={() => setActiveVideoId(vid.id)}
+            className="group block border-2 border-black rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all cursor-pointer text-left"
           >
             {/* Thumbnail */}
             <div className="relative aspect-video bg-zinc-900 overflow-hidden">
@@ -133,9 +132,39 @@ export default function YouTubeVideos({ query, title = "Helpful Video Tutorials"
                 </span>
               </div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
+
+      {/* Video Popup Modal Player */}
+      {activeVideoId && (
+        <div
+          className="fixed inset-0 z-10000 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md no-translate"
+          onClick={() => setActiveVideoId(null)}
+        >
+          <div
+            className="relative bg-black border-2 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] w-full max-w-3xl overflow-hidden aspect-video flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setActiveVideoId(null)}
+              className="absolute top-3 right-3 z-10 p-1.5 rounded-xl bg-white/90 hover:bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+            >
+              <X className="w-4 h-4 text-black" />
+            </button>
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1`}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
