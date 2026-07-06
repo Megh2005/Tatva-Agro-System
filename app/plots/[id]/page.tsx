@@ -21,6 +21,7 @@ import {
   ThermometerSun,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import SpeechButton from "@/components/SpeechButton";
 
 export default function PlotDetailsPage({
   params,
@@ -122,7 +123,7 @@ export default function PlotDetailsPage({
           }
         }
       }
-      const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY;
+      const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
       const res = await fetch(
         `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lng}&unitsSystem=METRIC`,
       );
@@ -288,7 +289,7 @@ export default function PlotDetailsPage({
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&q=${plot.landmark.lat},${plot.landmark.lng}&zoom=17&maptype=satellite`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&q=${plot.landmark.lat},${plot.landmark.lng}&zoom=17&maptype=satellite`}
               ></iframe>
             </div>
           </Card>
@@ -408,10 +409,16 @@ export default function PlotDetailsPage({
             <Card className="shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl bg-white/95">
               <CardHeader className="pb-4 border-b border-slate-100">
                 <CardTitle className="text-xl font-bold text-slate-800 flex items-center justify-between tracking-tight">
-                  <div className="flex items-center gap-2">
-                    <Cloud className="w-5 h-5 text-sky-650" />
-                    Live Weather
-                  </div>
+                   <div className="flex items-center gap-2">
+                     <Cloud className="w-5 h-5 text-sky-650" />
+                     Live Weather
+                     {weather && !weather.error && (
+                       <SpeechButton
+                         text={`The current temperature at your farm is ${tempValue} degrees Celsius, which feels like ${feelsLikeValue} degrees Celsius. The relative humidity is ${humidityValue} percent, and the wind speed is ${windValue} kilometers per hour.`}
+                         className="h-7 w-7 p-1 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] rounded-lg ml-1"
+                       />
+                     )}
+                   </div>
                   <span className="text-[9px] uppercase font-bold text-sky-700 bg-sky-50 border border-black px-2.5 py-1 rounded-full shrink-0">
                     Auto-updates
                   </span>

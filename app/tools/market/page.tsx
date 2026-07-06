@@ -29,6 +29,9 @@ import {
   Map,
 } from "lucide-react";
 import { CROPS_CATALOGUE } from "@/lib/crops";
+import { T } from "@/components/TranslationContext";
+import SpeechButton from "@/components/SpeechButton";
+import YouTubeVideos from "@/components/YouTubeVideos";
 
 const MAJOR_MARKETS = [
   "Andhra Pradesh (Guntur Chilli APMC)",
@@ -258,8 +261,13 @@ export default function MarketPredictionPage() {
               <div className="bg-linear-to-r from-emerald-500 to-teal-600 h-1.5 w-full" />
               <CardHeader className="pb-4 border-b border-slate-100">
                 <CardTitle className="text-xl font-bold text-slate-850 flex items-center gap-2 tracking-tight">
-                  <Target className="w-5 h-5 text-emerald-600" /> Market
-                  Insights
+                  <Target className="w-5 h-5 text-emerald-600" /> <T>Market Insights</T>
+                  {result && (
+                    <SpeechButton
+                      text={`${result.summary}. ${result.marketInsight}`}
+                      className="h-7 w-7 p-1 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] rounded-lg ml-1"
+                    />
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 grow flex flex-col">
@@ -270,11 +278,10 @@ export default function MarketPredictionPage() {
                     </div>
                     <div className="space-y-1">
                       <p className="font-bold text-slate-700 text-lg">
-                        No forecasts yet
+                        <T>No forecasts yet</T>
                       </p>
-                      <p className="text-sm text-slate-450 font-medium max-w-xs leading-relaxed">
-                        Select your crop and target market, then let AI estimate
-                        current prices and profitability.
+                      <p className="text-sm text-slate-455 font-medium max-w-xs leading-relaxed">
+                        <T>Select your crop and target market, then let AI estimate current prices and profitability.</T>
                       </p>
                     </div>
                   </div>
@@ -284,7 +291,7 @@ export default function MarketPredictionPage() {
                   <div className="grow flex flex-col items-center justify-center text-center space-y-4">
                     <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
                     <p className="font-bold text-slate-750 animate-pulse">
-                      Consulting commodity pricing indices...
+                      <T>Consulting commodity pricing indices...</T>
                     </p>
                   </div>
                 )}
@@ -293,25 +300,25 @@ export default function MarketPredictionPage() {
                   <div className="space-y-4 animate-in fade-in duration-500">
                     <div className="bg-sky-50/50 border-2 border-black rounded-xl p-4">
                       <p className="text-sm font-semibold text-slate-700 italic leading-relaxed">
-                        "{result.summary}"
+                        "<T>{result.summary}</T>"
                       </p>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       <div className="bg-linear-to-br from-sky-50 to-indigo-50/50 border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200">
-                        <p className="text-[9px] font-bold text-sky-800 uppercase tracking-wider">
-                          Target Price
+                        <p className="text-[9px] font-bold text-sky-850 uppercase tracking-wider">
+                          <T>Target Price</T>
                         </p>
                         <p className="text-2xl font-extrabold text-sky-900 leading-tight">
                           ₹{result.predictedPrice.toFixed(1)}
-                          <span className="text-xs font-bold text-sky-700/80">
+                          <span className="text-xs font-bold text-sky-700/80 border-none bg-transparent">
                             /kg
                           </span>
                         </p>
                       </div>
                       <div className="bg-linear-to-br from-emerald-50 to-teal-50/50 border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200">
-                        <p className="text-[9px] font-bold text-emerald-800 uppercase tracking-wider">
-                          Net Profit
+                        <p className="text-[9px] font-bold text-emerald-850 uppercase tracking-wider">
+                          <T>Net Profit</T>
                         </p>
                         <p className="text-2xl font-extrabold text-emerald-950 leading-tight">
                           ₹{result.profitability.toFixed(0)}
@@ -326,30 +333,32 @@ export default function MarketPredictionPage() {
                         }`}
                       >
                         <p className="text-[9px] font-bold opacity-80 uppercase tracking-wider">
-                          Sellable
+                          <T>Sellable</T>
                         </p>
                         <p className="text-lg font-extrabold leading-tight">
-                          {result.sellableStatus}
+                          <T>{result.sellableStatus}</T>
                         </p>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <div className="bg-slate-50/30 border-2 border-black rounded-xl p-4">
+                      <div className="bg-slate-50/35 border-2 border-black rounded-xl p-4">
                         <p className="text-xs font-semibold text-slate-500 leading-relaxed mb-2">
-                          {result.marketInsight}
+                          <T>{result.marketInsight}</T>
                         </p>
                         <div className="flex flex-wrap gap-2 mt-3">
                           <span className="text-[9px] bg-white border border-black px-2.5 py-1 rounded font-bold text-slate-500 uppercase tracking-wider">
-                            Base Rate: ₹{result.aiFactors.basePrice}/kg
+                            <T>Base Rate</T>: ₹{result.aiFactors.basePrice}/kg
                           </span>
                           <span className="text-[9px] bg-white border border-black px-2.5 py-1 rounded font-bold text-slate-500 uppercase tracking-wider">
-                            Demand:{" "}
-                            {result.aiFactors.marketDemand > 0
-                              ? "High"
-                              : result.aiFactors.marketDemand < 0
-                                ? "Low"
-                                : "Normal"}
+                            <T>Demand</T>:{" "}
+                            <T>
+                              {result.aiFactors.marketDemand > 0
+                                ? "High"
+                                : result.aiFactors.marketDemand < 0
+                                  ? "Low"
+                                  : "Normal"}
+                            </T>
                           </span>
                         </div>
                       </div>
@@ -360,6 +369,11 @@ export default function MarketPredictionPage() {
             </Card>
           </div>
         </div>
+        {cropName && (
+          <div className="mt-8">
+            <YouTubeVideos query={`${cropName} market price mandi rate news`} title={`${cropName} Mandi Rates & Market Trends`} />
+          </div>
+        )}
       </div>
     </div>
   );

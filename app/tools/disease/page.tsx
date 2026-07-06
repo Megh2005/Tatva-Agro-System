@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { T } from "@/components/TranslationContext";
+import SpeechButton from "@/components/SpeechButton";
+import YouTubeVideos from "@/components/YouTubeVideos";
 
 interface PlanStep {
   week: string;
@@ -351,20 +354,24 @@ export default function DiseaseDiagnosticsPage() {
                                 {result.found ? (
                                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-rose-50 text-rose-600 border-2 border-black text-[10px] font-black uppercase rounded-full shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                                     <ShieldAlert className="w-3.5 h-3.5" />
-                                    Disease Found
+                                    <T>Disease Found</T>
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-600 border-2 border-black text-[10px] font-black uppercase rounded-full shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-655 border-2 border-black text-[10px] font-black uppercase rounded-full shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                                     <ShieldCheck className="w-3.5 h-3.5" />
-                                    Healthy foliage
+                                    <T>Healthy foliage</T>
                                   </span>
                                 )}
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-slate-50 text-slate-800 border-2 border-black text-[10px] font-black uppercase rounded-full shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
-                                  Severity: {result.severity}
+                                  <T>Severity</T>: <T>{result.severity}</T>
                                 </span>
                               </div>
-                              <h3 className="text-2xl sm:text-3xl font-black text-slate-850 dark:text-white leading-tight">
-                                {result.diseaseName}
+                              <h3 className="text-2xl sm:text-3xl font-black text-slate-850 dark:text-white leading-tight flex items-center gap-2">
+                                <T>{result.diseaseName}</T>
+                                <SpeechButton
+                                  text={`${result.diseaseName}. ${result.description}`}
+                                  className="h-7 w-7 p-1 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] rounded-lg"
+                                />
                               </h3>
                             </div>
 
@@ -372,7 +379,7 @@ export default function DiseaseDiagnosticsPage() {
                             <div className="p-4 bg-slate-50 dark:bg-zinc-900 border-2 border-black rounded-2xl space-y-1.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                               <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
                                 <span>AI Confidence</span>
-                                <span className="text-emerald-600">{(result.confidence * 100).toFixed(0)}%</span>
+                                <span className="text-emerald-600 font-extrabold">{(result.confidence * 100).toFixed(0)}%</span>
                               </div>
                               <div className="w-full bg-slate-200 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden border border-black">
                                 <motion.div
@@ -387,7 +394,7 @@ export default function DiseaseDiagnosticsPage() {
                             {/* Short path log */}
                             <div className="space-y-1">
                               <p className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed font-medium">
-                                {result.description}
+                                <T>{result.description}</T>
                               </p>
                             </div>
                           </div>
@@ -406,42 +413,45 @@ export default function DiseaseDiagnosticsPage() {
                         className="space-y-4"
                       >
                         <div className="p-4 bg-orange-50/50 dark:bg-orange-950/10 border-2 border-black rounded-2xl space-y-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                          <div className="flex items-center gap-2">
-                            <AlertTriangle className="w-5 h-5 text-orange-600" />
-                            <h4 className="text-xs font-black uppercase tracking-wider text-orange-800 dark:text-orange-350">
-                              Probable Fix
-                            </h4>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <AlertTriangle className="w-5 h-5 text-orange-600" />
+                              <h4 className="text-xs font-black uppercase tracking-wider text-orange-800 dark:text-orange-350">
+                                <T>Probable Fix</T>
+                              </h4>
+                            </div>
+                            <SpeechButton text={result.quickFix} className="h-7 w-7 p-1 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]" />
                           </div>
                           <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed font-medium p-3.5 bg-white dark:bg-zinc-900 rounded-xl border border-black shadow-inner">
-                            {result.quickFix}
+                            <T>{result.quickFix}</T>
                           </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="border-2 border-black p-4 rounded-2xl bg-white dark:bg-zinc-900/10 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] space-y-2">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Cultural Remedies</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600"><T>Cultural Remedies</T></span>
                             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400 font-bold list-none pl-0">
                               <li className="flex items-start gap-1.5">
                                 <ChevronRight className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                                Drain fields immediately to restrict splash dispersion.
+                                <T>Drain fields immediately to restrict splash dispersion.</T>
                               </li>
                               <li className="flex items-start gap-1.5">
                                 <ChevronRight className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                                Clear wild grass borders and weed blocks.
+                                <T>Clear wild grass borders and weed blocks.</T>
                               </li>
                             </ul>
                           </div>
 
                           <div className="border-2 border-black p-4 rounded-2xl bg-white dark:bg-zinc-900/10 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] space-y-2">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">Nutritional Remedies</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-600"><T>Nutritional Remedies</T></span>
                             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400 font-bold list-none pl-0">
                               <li className="flex items-start gap-1.5">
                                 <ChevronRight className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                Stop Nitrogen application until active spots dry up.
+                                <T>Stop Nitrogen application until active spots dry up.</T>
                               </li>
                               <li className="flex items-start gap-1.5">
                                 <ChevronRight className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                Spray Potassium blend to encourage foliar recovery.
+                                <T>Spray Potassium blend to encourage foliar recovery.</T>
                               </li>
                             </ul>
                           </div>
@@ -468,22 +478,22 @@ export default function DiseaseDiagnosticsPage() {
                               <div className="space-y-1.5">
                                 <div className="flex justify-between items-center">
                                   <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
-                                    {step.week}
+                                    <T>{step.week}</T>
                                   </span>
                                 </div>
                                 <h5 className="text-sm font-black text-slate-850 dark:text-white leading-tight">
-                                  {step.medication}
+                                  <T>{step.medication}</T>
                                 </h5>
                               </div>
 
                               <div className="space-y-2 border-t border-slate-100 dark:border-zinc-900 pt-2 text-[11px] leading-relaxed">
                                 <div className="grid grid-cols-12 gap-1 font-bold">
-                                  <span className="col-span-3 text-slate-450 uppercase tracking-wider text-[9px]">Dose:</span>
-                                  <span className="col-span-9 text-slate-750 dark:text-slate-350">{step.dosage}</span>
+                                  <span className="col-span-3 text-slate-450 uppercase tracking-wider text-[9px]"><T>Dose</T>:</span>
+                                  <span className="col-span-9 text-slate-750 dark:text-slate-350"><T>{step.dosage}</T></span>
                                 </div>
                                 <div className="grid grid-cols-12 gap-1 font-bold">
-                                  <span className="col-span-3 text-slate-450 uppercase tracking-wider text-[9px]">Guides:</span>
-                                  <span className="col-span-9 text-slate-600 dark:text-slate-400 font-medium">{step.instructions}</span>
+                                  <span className="col-span-3 text-slate-450 uppercase tracking-wider text-[9px]"><T>Guides</T>:</span>
+                                  <span className="col-span-9 text-slate-600 dark:text-slate-400 font-medium"><T>{step.instructions}</T></span>
                                 </div>
                               </div>
                             </div>
@@ -497,6 +507,11 @@ export default function DiseaseDiagnosticsPage() {
             </CardContent>
           </Card>
         </div>
+        {result && !isAnalyzing && (
+          <div className="mt-8">
+            <YouTubeVideos query={`${result.diseaseName} treatment crop disease control`} title="Learn More on YouTube" />
+          </div>
+        )}
       </div>
     </div>
   );

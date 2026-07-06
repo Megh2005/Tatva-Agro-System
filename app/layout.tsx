@@ -10,6 +10,8 @@ import { AuthProvider } from "@/components/Providers";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import DockNav from "@/components/DockNav";
 import CrispChat from "@/components/CrispChat";
+import { TranslationProvider } from "@/components/TranslationContext";
+import TranslationWidget from "@/components/TranslationWidget";
 
 const notoserif = Noto_Serif({
   subsets: ["latin"],
@@ -36,11 +38,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <TooltipProvider>
-              <BackgroundPattern />
-              <main className="pb-16">{children}</main>
-              <DockNav />
-            </TooltipProvider>
+            <TranslationProvider>
+              <TooltipProvider>
+                <BackgroundPattern />
+                <main className="pb-16">{children}</main>
+                <DockNav />
+                <TranslationWidget />
+              </TooltipProvider>
+            </TranslationProvider>
           </AuthProvider>
           <CrispChat />
           <ToastContainer
@@ -58,3 +63,4 @@ export default function RootLayout({
     </html>
   );
 }
+

@@ -45,7 +45,7 @@ export default function CreatePlotPage() {
   });
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY as string,
+    googleMapsApiKey: (process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY) as string,
     libraries,
   });
 

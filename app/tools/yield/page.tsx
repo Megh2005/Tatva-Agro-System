@@ -34,6 +34,9 @@ import {
 } from "lucide-react";
 import { getCityPh, type CityPh } from "@/lib/soil-ph";
 import { CROPS_CATALOGUE } from "@/lib/crops";
+import { T } from "@/components/TranslationContext";
+import SpeechButton from "@/components/SpeechButton";
+import YouTubeVideos from "@/components/YouTubeVideos";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Pest catalogue with pre-assigned risk levels
@@ -747,6 +750,11 @@ export default function YieldEstimationPage() {
             </Card>
           </div>
         </form>
+        {paddyType && (
+          <div className="mt-8">
+            <YouTubeVideos query={`${paddyType} crop yield cultivation methods`} title={`${paddyType} Cultivation Guide Videos`} />
+          </div>
+        )}
       </div>
       {/* Action Plan Modal Overlay */}
       {showActionPlan && result?.actionPlan && (
@@ -754,8 +762,11 @@ export default function YieldEstimationPage() {
           <div className="bg-white border-2 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 ">
             <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
               <h3 className="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" /> AI Action
-                Plan
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" /> <T>AI Action Plan</T>
+                <SpeechButton
+                  text={`${result.actionPlan.summary}. Steps to follow: ${result.actionPlan.steps.join(". ")}`}
+                  className="h-7 w-7 p-1 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] ml-1"
+                />
               </h3>
               <button
                 type="button"
@@ -768,7 +779,7 @@ export default function YieldEstimationPage() {
             <div className="p-6 overflow-y-auto grow">
               <div className="bg-sky-50/50 border-2 border-black rounded-xl p-4 mb-6">
                 <p className="text-sm font-semibold text-slate-700 leading-relaxed italic">
-                  "{result.actionPlan.summary}"
+                  "<T>{result.actionPlan.summary}</T>"
                 </p>
               </div>
               <ul className="space-y-4">
@@ -781,7 +792,7 @@ export default function YieldEstimationPage() {
                       {idx + 1}
                     </div>
                     <p className="text-sm text-slate-650 font-medium leading-relaxed">
-                      {step}
+                      <T>{step}</T>
                     </p>
                   </li>
                 ))}
