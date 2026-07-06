@@ -28,6 +28,8 @@ import {
   RiInformationLine,
   RiInformationFill,
   RiCustomerService2Line,
+  RiPlantLine,
+  RiPlantFill,
   RiCustomerService2Fill,
 } from "react-icons/ri";
 import { motion, AnimatePresence } from "framer-motion";
@@ -95,6 +97,14 @@ export default function Navigation() {
       icon: RiTempHotLine,
       iconFilled: RiTempHotFill,
       href: "/tools/yield",
+      show: status === "authenticated",
+    },
+    {
+      name: "Floriculture",
+      shortName: "Flowers",
+      icon: RiPlantLine,
+      iconFilled: RiPlantFill,
+      href: "/tools/floriculture",
       show: status === "authenticated",
     },
     {

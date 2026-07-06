@@ -90,7 +90,7 @@ export default function YouTubeVideos({ query, title = "Helpful Video Tutorials"
           <T>{title}</T>
         </h4>
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 border border-black px-2.5 py-0.5 rounded-md">
-          <T>YouTube Integration</T>
+          <T>Video Suggestion</T>
         </span>
       </div>
 
