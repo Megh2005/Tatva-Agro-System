@@ -70,6 +70,23 @@ Instead of visiting multiple government portals and manually filing claims, farm
 - Location intelligence
 
 ---
+## ⚡ Technology Stack
+
+| Category | Technologies |
+|-----------|--------------|
+| Frontend | Next.js 15, React 19, TailwindCSS |
+| Backend | Next.js API Routes |
+| Authentication | NextAuth |
+| AI | Gemini 2.5 Pro |
+| Database | MongoDB Atlas |
+| Storage | Cloudinary |
+| ORM | Mongoose |
+| Language | TypeScript |
+| UI | Shadcn UI |
+| Animation | Framer Motion |
+| Icons | Lucide React |
+
+---
 
 ## 📊 AI Analytics Dashboard
 
@@ -124,16 +141,6 @@ The AI verifies all uploaded images before processing the insurance claim.
 
 ---
 
-# 🚀 Technology Stack
-
-| Frontend | Backend | AI | Database | Cloud |
-|----------|----------|-----|----------|--------|
-| Next.js 15 | Next API Routes | Gemini 2.5 | MongoDB | Cloudinary |
-| React 19 | JWT | Google AI | Mongoose | Google Cloud |
-| TailwindCSS | NextAuth | Vision AI | MongoDB Atlas | |
-
----
-
 # 🏗 Architecture
 
 ```text
@@ -150,33 +157,33 @@ The AI verifies all uploaded images before processing the insurance claim.
 
             ┌──────────────┼───────────────┐
 
-            │              │               │
+            │              │                    │
 
-            ▼              ▼               ▼
+            ▼              ▼                   ▼
 
       Authentication    Insurance      AI Assistant
 
-            │              │               │
+            │               │               │
 
             ▼              ▼               ▼
 
         NextAuth       Image Upload      Gemini API
 
-            │              │
+            │               │
 
             ▼              ▼
 
          MongoDB      Cloudinary
 
-            │
+             │
 
-            ▼
+             ▼
 
       AI Claim Processing
 
-            │
+             │
 
-            ▼
+             ▼
 
       Insurance Dashboard
 
@@ -233,74 +240,33 @@ Tatva-Agro-System/
 
 ---
 
-# 🔄 Insurance Claim Workflow
+## 🌾 Insurance Claim Workflow
 
-```text
+```mermaid
+graph TD
 
-Farmer
+Farmer --> Login
 
-   │
+Login --> SelectPlot
 
-   ▼
+SelectPlot --> SelectCalamity
 
-Login
+SelectCalamity --> CaptureImages
 
-   │
+CaptureImages --> UploadCloudinary
 
-   ▼
+UploadCloudinary --> GeminiVision
 
-Select Farm
+GeminiVision --> FraudDetection
 
-   │
+FraudDetection --> DamageCalculation
 
-   ▼
+DamageCalculation --> StoreMongoDB
 
-Enter Damage Details
+StoreMongoDB --> Dashboard
 
-   │
-
-   ▼
-
-Capture Images
-
-   │
-
-   ▼
-
-Upload to Cloudinary
-
-   │
-
-   ▼
-
-Gemini AI Analysis
-
-   │
-
-   ▼
-
-Fraud Detection
-
-   │
-
-   ▼
-
-Damage Estimation
-
-   │
-
-   ▼
-
-Claim Verification
-
-   │
-
-   ▼
-
-Dashboard Status
-
+Dashboard --> ClaimStatus
 ```
-
 ---
 
 # 🤖 AI Workflow
@@ -343,38 +309,30 @@ Farmer
 
 ---
 
-# 🔐 Authentication Flow
 
-```text
+## 🔐 Authentication
 
-Google Login
+```mermaid
+sequenceDiagram
 
-      │
+participant User
 
-      ▼
+participant Google
 
-NextAuth
+participant NextAuth
 
-      │
+participant MongoDB
 
-      ▼
+User->>Google: Login
 
-JWT Session
+Google->>NextAuth: OAuth Token
 
-      │
+NextAuth->>MongoDB: Verify/Create User
 
-      ▼
+MongoDB-->>NextAuth: User
 
-Protected Routes
-
-      │
-
-      ▼
-
-Dashboard
-
+NextAuth-->>User: JWT Session
 ```
-
 ---
 
 # 📷 Screenshots
