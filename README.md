@@ -327,6 +327,72 @@ MongoDB-->>NextAuth: User
 NextAuth-->>User: JWT Session
 ```
 ---
+## ☁ Cloudinary Upload Workflow
+
+```mermaid
+sequenceDiagram
+
+participant Farmer
+
+participant Browser
+
+participant Cloudinary
+
+participant Backend
+
+participant MongoDB
+
+Farmer->>Browser: Capture Images
+
+Browser->>Cloudinary: Upload Image
+
+Cloudinary-->>Browser: Secure URL
+
+Browser->>Backend: Submit URLs
+
+Backend->>MongoDB: Store Claim
+
+MongoDB-->>Backend: Success
+
+Backend-->>Farmer: Claim Submitted
+```
+---
+## 🧩 Component Dependency
+
+```mermaid
+graph TD
+
+App
+
+App --> Authentication
+
+App --> Dashboard
+
+App --> Weather
+
+App --> Insurance
+
+App --> Profile
+
+Insurance --> Camera
+
+Insurance --> Gemini
+
+Insurance --> Cloudinary
+
+Dashboard --> Charts
+
+Dashboard --> WeatherCard
+
+Dashboard --> PlotCard
+
+Dashboard --> InsuranceStatus
+
+Profile --> NextAuth
+
+Profile --> MongoDB
+```
+---
 
 # 📷 Screenshots
 
@@ -434,28 +500,142 @@ CLOUDINARY_API_SECRET=
 - AI Yield Prediction
 
 ---
+## 🌟 Why Tatva?
 
-# 📈 Project Highlights
+✔ AI-powered insurance verification
 
-✅ AI Insurance Verification
+✔ Satellite-assisted crop monitoring
 
-✅ Google Authentication
+✔ Real-time weather intelligence
 
-✅ Gemini Powered Assistant
+✔ Secure Google Authentication
 
-✅ Responsive Design
+✔ Automated email notifications
 
-✅ Image Upload
+✔ Cloud image storage
 
-✅ Cloudinary Storage
+✔ Smart damage assessment
 
-✅ Government Scheme Finder
+✔ Modern responsive UI
 
-✅ Plot Registration
+✔ PMFBY-inspired insurance workflow
 
-✅ Crop Monitoring
+✔ End-to-end digital farming ecosystem
 
-✅ Modern UI/UX
+---
+
+## 🗄️ Database ER Diagram
+
+```mermaid
+erDiagram
+
+    USER {
+        ObjectId _id PK
+        string name
+        string email
+        string image
+        string role
+        datetime createdAt
+    }
+
+    PLOT {
+        ObjectId _id PK
+        ObjectId ownerId FK
+        string name
+        string state
+        string city
+        string pincode
+        float area
+        string soilType
+        string cropType
+        string irrigationType
+        float latitude
+        float longitude
+        string landmarkName
+        string landmarkAddress
+        float landmarkLat
+        float landmarkLng
+        datetime createdAt
+    }
+
+    INSURANCE_CLAIM {
+        ObjectId _id PK
+        ObjectId userId FK
+        ObjectId plotId FK
+        string claimId
+        string calamityType
+        string calamityDescription
+        int damagedPercentage
+        float damagedArea
+        string status
+        float confidenceScore
+        float estimatedLoss
+        string aiPrediction
+        datetime createdAt
+    }
+
+    CLAIM_IMAGES {
+        ObjectId _id PK
+        ObjectId claimId FK
+        string selfie
+        string landDocument
+        string affectedCrop
+        string fullLandView
+        string landmarkPhoto
+    }
+
+    AI_ANALYSIS {
+        ObjectId _id PK
+        ObjectId claimId FK
+        string cropHealth
+        string diseaseDetected
+        string damageLevel
+        string recommendation
+        float confidence
+        datetime analysedAt
+    }
+
+    WEATHER {
+        ObjectId _id PK
+        ObjectId plotId FK
+        float temperature
+        float humidity
+        float rainfall
+        float windSpeed
+        string condition
+        datetime recordedAt
+    }
+
+    SATELLITE_DATA {
+        ObjectId _id PK
+        ObjectId plotId FK
+        float ndvi
+        float soilMoisture
+        float vegetationIndex
+        string satelliteSource
+        datetime capturedAt
+    }
+
+    EMAIL_NOTIFICATION {
+        ObjectId _id PK
+        ObjectId userId FK
+        string subject
+        string type
+        string status
+        datetime sentAt
+    }
+
+    USER ||--o{ PLOT : owns
+    USER ||--o{ INSURANCE_CLAIM : files
+    USER ||--o{ EMAIL_NOTIFICATION : receives
+
+    PLOT ||--o{ INSURANCE_CLAIM : generates
+    PLOT ||--o{ WEATHER : monitors
+    PLOT ||--o{ SATELLITE_DATA : tracked_by
+
+    INSURANCE_CLAIM ||--|| CLAIM_IMAGES : contains
+    INSURANCE_CLAIM ||--|| AI_ANALYSIS : analysed_by
+```
 
 ---
 
@@ -474,8 +654,6 @@ Contributions are welcome!
 # 👨‍💻 Developer
 
 **Megh Deb**
-
-AI • Full Stack Developer • Precision Agriculture Enthusiast
 
 GitHub:
 https://github.com/Megh2005
