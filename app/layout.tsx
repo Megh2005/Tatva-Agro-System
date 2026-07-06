@@ -9,7 +9,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/components/Providers";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import DockNav from "@/components/DockNav";
-import CrispChat from "@/components/CrispChat";
 import { TranslationProvider } from "@/components/TranslationContext";
 import TranslationWidget from "@/components/TranslationWidget";
 
@@ -47,7 +46,6 @@ export default function RootLayout({
               </TooltipProvider>
             </TranslationProvider>
           </AuthProvider>
-          <CrispChat />
           <ToastContainer
             autoClose={2000}
             position="top-right"

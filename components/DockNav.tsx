@@ -224,7 +224,7 @@ export default function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed inset-0 z-[9999] bg-white/95 backdrop-blur-lg flex flex-col p-6 overflow-y-auto"
+            className="md:hidden fixed inset-0 z-9999 bg-white/95 backdrop-blur-lg flex flex-col p-6 overflow-y-auto"
           >
             {/* Top bar inside menu */}
             <div className="flex items-center justify-between border-b-2 border-black pb-4 mb-6">
