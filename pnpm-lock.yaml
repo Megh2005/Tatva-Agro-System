@@ -17,6 +17,9 @@ importers:
       '@google/generative-ai':
         specifier: ^0.24.1
         version: 0.24.1
+      '@mediapipe/tasks-vision':
+        specifier: ^0.10.35
+        version: 0.10.35
       '@react-google-maps/api':
         specifier: ^2.20.8
         version: 2.20.8(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -631,6 +634,9 @@ packages:
 
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
+
+  '@mediapipe/tasks-vision@0.10.35':
+    resolution: {integrity: sha512-HOvadwVRE6JC+45nyYhmnywnr5h/J8KZvOeUNVOG9q/0875pZgItznFB9bRTvLc264YSJqiZ1NsIpCStJw/egg==}
 
   '@modelcontextprotocol/sdk@1.26.0':
     resolution: {integrity: sha512-Y5RmPncpiDtTXDbLKswIJzTqu2hyBKxTNsgKqKclDbhIgg1wgtf1fRuvxgTnRfcnxtvvgbIEcqUOzZrJ6iSReg==}
@@ -4406,6 +4412,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@js-sdsl/ordered-map@4.4.2': {}
+
+  '@mediapipe/tasks-vision@0.10.35': {}
 
   '@modelcontextprotocol/sdk@1.26.0(zod@3.25.76)':
     dependencies:

@@ -8,6 +8,7 @@ import BackgroundPattern from "@/components/BackgroundPattern";
 import Webcam from "react-webcam";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useFaceDetector } from "@/hooks/useFaceDetector";
 import {
   MapPin,
   Loader2,
@@ -169,18 +170,66 @@ function CameraCapture({
   const [localPreview, setLocalPreview] = useState<string | null>(captured);
   const Icon = slot.icon;
 
+  const { isLoading, validateSelfie, validateSelfieVideoFrame, initDetector } = useFaceDetector();
+  const [isValidating, setIsValidating] = useState(false);
+  const [realTimeStatus, setRealTimeStatus] = useState<{ isValid: boolean; message: string } | null>(null);
+
   const openCamera = () => {
     setIsCameraOpen(true);
+    if (slot.key === "selfie") {
+      initDetector();
+    }
   };
 
   const closeCamera = () => {
     setIsCameraOpen(false);
   };
 
-  const capture = () => {
+  // Real-time loop hook
+  useEffect(() => {
+    if (!isCameraOpen || slot.key !== "selfie") {
+      setRealTimeStatus(null);
+      return;
+    }
+
+    let active = true;
+    let timerId: any = null;
+
+    const runValidation = () => {
+      if (!active) return;
+      const video = webcamRef.current?.video;
+      if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+        const result = validateSelfieVideoFrame(video);
+        setRealTimeStatus(result);
+      }
+      timerId = setTimeout(runValidation, 250);
+    };
+
+    // Delay loop start to allow video canvas mapping to boot up
+    timerId = setTimeout(runValidation, 800);
+
+    return () => {
+      active = false;
+      clearTimeout(timerId);
+    };
+  }, [isCameraOpen, slot.key]);
+
+  const capture = async () => {
     if (!webcamRef.current) return;
     const dataUrl = webcamRef.current.getScreenshot();
     if (!dataUrl) return;
+
+    if (slot.key === "selfie") {
+      setIsValidating(true);
+      const validation = await validateSelfie(dataUrl);
+      setIsValidating(false);
+
+      if (!validation.isValid) {
+        toast.error(validation.message);
+        return; // keeps the camera active and prevents saving the image
+      }
+      toast.success("Selfie verified successfully!");
+    }
     
     setLocalPreview(dataUrl);
     closeCamera();
@@ -191,6 +240,8 @@ function CameraCapture({
     facingMode: slot.camera === "user" ? "user" : "environment",
   };
 
+  const isCaptureDisabled = isLoading || isValidating || (slot.key === "selfie" && (!realTimeStatus || !realTimeStatus.isValid));
+
   return (
     <div className="rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
       {/* Header */}
@@ -200,7 +251,7 @@ function CameraCapture({
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-slate-800 text-sm">{slot.label}</p>
-          <p className="text-[10px] text-slate-500 font-medium truncate">{slot.description}</p>
+          <p className="text-[10px] text-slate-500 font-medium truncate">{slot.hint}</p>
         </div>
         {localPreview && (
           <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
@@ -211,7 +262,7 @@ function CameraCapture({
       <div className="p-4">
         {isCameraOpen ? (
           <div className="space-y-3">
-            <div className="rounded-xl border-2 border-black overflow-hidden bg-slate-900 flex items-center justify-center">
+            <div className="relative rounded-xl border-2 border-black overflow-hidden bg-slate-900 flex items-center justify-center">
               <Webcam
                 audio={false}
                 ref={webcamRef}
@@ -223,15 +274,59 @@ function CameraCapture({
                   setIsCameraOpen(false);
                 }}
               />
+              {/* Centered Guide Overlay for Selfie */}
+              {slot.key === "selfie" && (
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <div className="w-[60%] h-[75%] rounded-[50%] border-2 border-dashed border-white/50 bg-black/10" />
+                </div>
+              )}
             </div>
+
+            {slot.key === "selfie" && realTimeStatus && (
+              <div className={cn(
+                "flex items-center gap-2 text-xs font-black rounded-xl p-3 border-2 border-black justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all",
+                realTimeStatus.isValid 
+                  ? "bg-emerald-50 text-emerald-800" 
+                  : "bg-amber-50 text-amber-800"
+              )}>
+                {realTimeStatus.isValid ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                )}
+                <span>{realTimeStatus.message}</span>
+              </div>
+            )}
+
+            {slot.key === "selfie" && !realTimeStatus && (isLoading || isValidating) && (
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-50 border border-dashed border-black rounded-lg p-2.5 justify-center">
+                <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                {isLoading ? "Downloading face recognition model..." : "Analyzing selfie frame..."}
+              </div>
+            )}
+
             <div className="flex gap-2">
               <button
+                disabled={isCaptureDisabled}
                 onClick={capture}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-orange-500 text-white font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm"
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-orange-500 text-white font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Camera size={16} /> Capture
+                {isLoading ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Preparing...
+                  </>
+                ) : isValidating ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Verifying...
+                  </>
+                ) : (
+                  <>
+                    <Camera size={16} /> Capture
+                  </>
+                )}
               </button>
               <button
+                disabled={isValidating}
                 onClick={closeCamera}
                 className="px-4 py-2.5 rounded-xl bg-white text-slate-700 font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm"
               >
