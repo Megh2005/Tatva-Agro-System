@@ -174,7 +174,8 @@ export default function ContactPage() {
                   <User size={16} className="text-blue-600" />
                   Full Name
                 </label>
-                <input
+                <motion.input
+                  whileHover={{ scale: 1.01 }}
                   type="text"
                   name="name"
                   value={formData.name}
@@ -204,7 +205,8 @@ export default function ContactPage() {
                     <MapPin size={16} className="text-emerald-600" />
                     State
                   </label>
-                  <select
+                  <motion.select
+                    whileHover={{ scale: 1.01 }}
                     name="state"
                     value={formData.state}
                     onChange={handleStateChange}
@@ -214,7 +216,7 @@ export default function ContactPage() {
                     {Object.keys(indianStatesAndCities).sort().map((state) => (
                       <option key={state} value={state}>{state}</option>
                     ))}
-                  </select>
+                  </motion.select>
                   <AnimatePresence>
                     {errors.state && (
                       <motion.p
@@ -235,7 +237,8 @@ export default function ContactPage() {
                     <Building size={16} className="text-emerald-600" />
                     City
                   </label>
-                  <select
+                  <motion.select
+                    whileHover={{ scale: 1.01 }}
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
@@ -246,7 +249,7 @@ export default function ContactPage() {
                     {availableCities.map((city) => (
                       <option key={city} value={city}>{city}</option>
                     ))}
-                  </select>
+                  </motion.select>
                   <AnimatePresence>
                     {errors.city && (
                       <motion.p
@@ -270,7 +273,8 @@ export default function ContactPage() {
                     <Phone size={16} className="text-orange-600" />
                     Mobile Number
                   </label>
-                  <input
+                  <motion.input
+                    whileHover={{ scale: 1.01 }}
                     type="tel"
                     name="mobile"
                     value={formData.mobile}
@@ -301,7 +305,8 @@ export default function ContactPage() {
                     <Mail size={16} className="text-orange-600" />
                     Email Address
                   </label>
-                  <input
+                  <motion.input
+                    whileHover={{ scale: 1.01 }}
                     type="email"
                     name="email"
                     value={formData.email}
@@ -333,7 +338,8 @@ export default function ContactPage() {
                   <AlertCircle size={16} className="text-purple-600" />
                   Describe Your Problem
                 </label>
-                <textarea
+                <motion.textarea
+                  whileHover={{ scale: 1.01 }}
                   name="problem"
                   value={formData.problem}
                   onChange={handleChange}
@@ -357,7 +363,8 @@ export default function ContactPage() {
               </div>
 
               <div className="pt-4">
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl px-10 py-4 font-black bg-black text-white hover:bg-slate-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 text-lg uppercase tracking-wider"
@@ -373,7 +380,7 @@ export default function ContactPage() {
                       Submit Request
                     </span>
                   )}
-                </button>
+                </motion.button>
               </div>
 
             </form>

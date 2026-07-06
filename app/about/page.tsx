@@ -80,8 +80,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.0 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-emerald-400 to-teal-500 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -97,8 +98,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.15 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-emerald-400 to-teal-500 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -114,8 +116,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.3 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-emerald-400 to-teal-500 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -131,8 +134,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.45 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-emerald-400 to-teal-500 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -160,8 +164,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.1 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-blue-500 to-indigo-600 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -177,8 +182,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.25 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-emerald-500 to-teal-600 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -194,8 +200,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.4 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-orange-500 to-amber-500 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">
@@ -211,8 +218,9 @@ export default function AboutPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 2.0, ease: "easeOut", delay: 0.55 }}
-                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden"
+                className="group flex flex-col rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all overflow-hidden cursor-pointer"
               >
                 <div className="bg-linear-to-r from-purple-500 to-fuchsia-600 h-2.5 w-full border-b-2 border-black" />
                 <div className="p-6 grow flex flex-col">

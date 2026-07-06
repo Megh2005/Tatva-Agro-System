@@ -724,9 +724,10 @@ export default function YieldEstimationPage() {
                           bg: "bg-linear-to-br from-rose-50 to-orange-50/50",
                         },
                       ].map(({ label, value, sub, border, bg }) => (
-                        <div
+                        <motion.div
                           key={label}
-                          className={`${bg} border ${border} rounded-xl p-4 flex flex-col justify-center gap-0.5 hover:shadow-xs transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`}
+                          whileHover={{ scale: 1.02 }}
+                          className={`${bg} border ${border} rounded-xl p-4 flex flex-col justify-center gap-0.5 hover:shadow-xs transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer`}
                         >
                           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
                             {label}
@@ -737,7 +738,7 @@ export default function YieldEstimationPage() {
                           <p className="text-xs font-semibold text-slate-400 mt-0.5">
                             {sub}
                           </p>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
 

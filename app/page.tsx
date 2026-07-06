@@ -44,12 +44,13 @@ export default function Home() {
             transition={{ duration: 2.0, ease: "easeOut", delay: 0.4 }}
             className="flex flex-wrap justify-center gap-8"
           >
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
               onClick={redirecttoAuthScreen}
               className="rounded-xl px-10 py-4 text-lg font-bold tracking-tight bg-linear-to-r from-emerald-600 to-teal-600 text-white hover:shadow-xl hover:shadow-emerald-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer border-none shadow-md"
             >
               Get Started
-            </button>
+            </motion.button>
           </motion.div>
         </div>
       </div>

@@ -391,7 +391,10 @@ export default function DiscolourationToolPage() {
                   {/* Stat Tiles */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {/* Healthy */}
-                    <div className="bg-linear-to-br from-emerald-50 to-teal-50/50 border-2 border-black rounded-xl p-3.5 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 relative overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-linear-to-br from-emerald-50 to-teal-50/50 border-2 border-black rounded-xl p-3.5 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 relative overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+                    >
                       <div className="absolute -right-4 -top-4 opacity-10">
                         <Leaf className="w-24 h-24 text-emerald-900" />
                       </div>
@@ -403,10 +406,13 @@ export default function DiscolourationToolPage() {
                           Healthy Area
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Stressed */}
-                    <div className="bg-linear-to-br from-rose-50 to-orange-50/60 border-2 border-black rounded-xl p-3.5 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 relative overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-linear-to-br from-rose-50 to-orange-50/60 border-2 border-black rounded-xl p-3.5 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 relative overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+                    >
                       <div className="absolute -right-4 -top-4 opacity-10">
                         <AlertTriangle className="w-24 h-24 text-rose-900" />
                       </div>
@@ -418,10 +424,13 @@ export default function DiscolourationToolPage() {
                           Stressed Area
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Background / Empty */}
-                    <div className="bg-slate-50/80 border-2 border-black rounded-xl p-3.5 hidden md:flex flex-col justify-center gap-1 hover:bg-white transition-all duration-200 relative overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-slate-50/80 border-2 border-black rounded-xl p-3.5 hidden md:flex flex-col justify-center gap-1 hover:bg-white transition-all duration-200 relative overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+                    >
                       <div className="absolute -right-4 -top-4 opacity-5">
                         <Maximize className="w-24 h-24 text-slate-900" />
                       </div>
@@ -433,7 +442,7 @@ export default function DiscolourationToolPage() {
                           Empty space
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
 
                   {/* Images Side-by-Side */}

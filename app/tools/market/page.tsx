@@ -313,7 +313,10 @@ export default function MarketPredictionPage() {
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      <div className="bg-linear-to-br from-sky-50 to-indigo-50/50 border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200">
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="bg-linear-to-br from-sky-50 to-indigo-50/50 border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                      >
                         <p className="text-[9px] font-bold text-sky-850 uppercase tracking-wider">
                           <T>Target Price</T>
                         </p>
@@ -323,17 +326,21 @@ export default function MarketPredictionPage() {
                             /kg
                           </span>
                         </p>
-                      </div>
-                      <div className="bg-linear-to-br from-emerald-50 to-teal-50/50 border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200">
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="bg-linear-to-br from-emerald-50 to-teal-50/50 border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                      >
                         <p className="text-[9px] font-bold text-emerald-850 uppercase tracking-wider">
                           <T>Net Profit</T>
                         </p>
                         <p className="text-2xl font-extrabold text-emerald-950 leading-tight">
                           ₹{result.profitability.toFixed(0)}
                         </p>
-                      </div>
-                      <div
-                        className={`border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 ${
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className={`border-2 border-black rounded-xl p-4 flex flex-col justify-center gap-1 hover:shadow-sm transition-all duration-200 cursor-pointer ${
                           result.sellableStatus === "Highly Sellable" ||
                           result.sellableStatus === "Yes"
                             ? "bg-linear-to-br from-emerald-50 to-teal-50/50 text-emerald-900"
@@ -346,7 +353,7 @@ export default function MarketPredictionPage() {
                         <p className="text-lg font-extrabold leading-tight">
                           <T>{result.sellableStatus}</T>
                         </p>
-                      </div>
+                      </motion.div>
                     </div>
 
                     <div className="space-y-2">

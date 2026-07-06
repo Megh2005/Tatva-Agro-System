@@ -629,9 +629,10 @@ export default function DiseaseDiagnosticsPage() {
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {result.weeklyPlan.map((step, idx) => (
-                            <div
+                            <motion.div
                               key={idx}
-                              className="border-2 border-black rounded-2xl bg-white dark:bg-zinc-900/10 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] space-y-3 relative overflow-hidden flex flex-col justify-between"
+                              whileHover={{ scale: 1.02 }}
+                              className="border-2 border-black rounded-2xl bg-white dark:bg-zinc-900/10 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] space-y-3 relative overflow-hidden flex flex-col justify-between cursor-pointer"
                             >
                               <div className="space-y-1.5">
                                 <div className="flex justify-between items-center">
@@ -654,7 +655,7 @@ export default function DiseaseDiagnosticsPage() {
                                   <span className="col-span-9 text-slate-600 dark:text-slate-400 font-medium"><T>{step.instructions}</T></span>
                                 </div>
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
                       </motion.div>
