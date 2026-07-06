@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 import {
   UploadCloud,
   Loader2,
@@ -25,6 +26,7 @@ import {
   ChevronRight,
   ShieldCheck,
   ClipboardList,
+  Mail,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -52,7 +54,101 @@ interface DiseaseAnalysisResult {
 
 type TabType = "diagnosis" | "cures" | "timeline";
 
+function generateDiseaseEmailHtml(result: DiseaseAnalysisResult) {
+  const weeklyStepsHtml = result.weeklyPlan
+    .map(
+      (step) => `
+      <div style="margin-bottom: 12px; padding: 12px; border-left: 4px solid #10b981; background-color: #f9fafb; border-radius: 4px;">
+        <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #047857;">
+          ${step.week}
+        </span>
+        <h4 style="margin: 4px 0; font-size: 14px; font-weight: bold; color: #1f2937;">
+          ${step.medication}
+        </h4>
+        <p style="margin: 4px 0; font-size: 12px; color: #4b5563;">
+          <strong>Dose:</strong> ${step.dosage}
+        </p>
+        <p style="margin: 4px 0; font-size: 12px; color: #4b5563;">
+          <strong>Instructions:</strong> ${step.instructions}
+        </p>
+      </div>
+    `
+    )
+    .join("");
+
+  return `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333333; max-width: 600px; margin: 0 auto; padding: 20px; border: 2px solid #000000; border-radius: 12px; background-color: #ffffff; box-shadow: 4px 4px 0px 0px #000000;">
+      <!-- Header -->
+      <div style="border-bottom: 2px solid #000000; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="color: #10b981; margin: 0; font-size: 24px; font-weight: 800; text-transform: uppercase;">
+          Tatva Agro
+        </h1>
+        <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+          Crop Leaf Diagnosis Report
+        </p>
+      </div>
+
+      <!-- General Diagnostic Details -->
+      <div style="margin-bottom: 20px;">
+        <p style="margin: 6px 0; font-size: 14px;">
+          <strong>Status:</strong> 
+          ${result.found ? "<span style='color: #ef4444; font-weight: bold;'>⚠️ Disease Detected</span>" : "<span style='color: #10b981; font-weight: bold;'>✅ Healthy Foliage</span>"}
+        </p>
+        <p style="margin: 6px 0; font-size: 14px;"><strong>Disease Diagnosed:</strong> <span style="font-size: 16px; font-weight: bold; color: #111827;">${result.diseaseName}</span></p>
+        <p style="margin: 6px 0; font-size: 14px;"><strong>Severity Assessment:</strong> ${result.severity}</p>
+        <p style="margin: 6px 0; font-size: 14px;"><strong>Diagnosis Confidence:</strong> ${(result.confidence * 100).toFixed(0)}%</p>
+      </div>
+
+      <!-- AI Description -->
+      <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 25px;">
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; color: #4b5563; text-transform: uppercase;">Pathological Description</h3>
+        <p style="margin: 0; font-size: 13px; color: #1f2937; font-style: italic; line-height: 1.5;">
+          "${result.description}"
+        </p>
+      </div>
+
+      <!-- Quick Cures & Remedies -->
+      <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; padding: 15px; margin-bottom: 25px;">
+        <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #d97706; text-transform: uppercase;">🚨 Immediate Cures & Remedies</h3>
+        
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: #1f2937; line-height: 1.5;">
+          <strong>Probable Fix:</strong> ${result.quickFix}
+        </p>
+
+        <p style="margin: 0 0 4px 0; font-size: 12px; font-weight: bold; color: #047857;">Cultural Remedies:</p>
+        <ul style="margin: 0 0 12px 0; padding-left: 20px; font-size: 12px; color: #4b5563;">
+          <li>Drain fields immediately to restrict splash dispersion.</li>
+          <li>Clear wild grass borders and weed blocks.</li>
+        </ul>
+
+        <p style="margin: 0 0 4px 0; font-size: 12px; font-weight: bold; color: #b45309;">Nutritional Remedies:</p>
+        <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #4b5563;">
+          <li>Stop Nitrogen application until active spots dry up.</li>
+          <li>Spray Potassium blend to encourage foliar recovery.</li>
+        </ul>
+      </div>
+
+      <!-- Recovery Schedule -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 15px; color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin: 0 0 15px 0; text-transform: uppercase;">
+          📅 Recovery Schedule
+        </h3>
+        <div>
+          ${weeklyStepsHtml}
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 25px; text-align: center; font-size: 11px; color: #9ca3af;">
+        This report was generated by Tatva Agro AI. © ${new Date().getFullYear()} Tatva Team. All rights reserved.
+      </div>
+    </div>
+  `;
+}
+
 export default function DiseaseDiagnosticsPage() {
+  const { data: session } = useSession();
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -61,6 +157,40 @@ export default function DiseaseDiagnosticsPage() {
   const [analysisPhase, setAnalysisPhase] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSendEmail = async () => {
+    if (!session?.user?.email) {
+      toast.error("User email not found. Please log in.");
+      return;
+    }
+    if (!result) return;
+
+    setIsSendingEmail(true);
+    try {
+      const htmlContent = generateDiseaseEmailHtml(result);
+      const res = await fetch("/api/send-mail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: session.user.email,
+          subject: `Tatva Agro: Crop Disease Diagnostics Report - ${result.diseaseName}`,
+          html: htmlContent,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success("Diagnostic report successfully emailed!");
+      } else {
+        throw new Error(data.error || "Failed to send email");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to send email.");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -260,7 +390,27 @@ export default function DiseaseDiagnosticsPage() {
 
               {/* Tabs Switcher */}
               {result && !isAnalyzing && (
-                <div className="flex bg-slate-100 dark:bg-zinc-900 p-1 rounded-full border-2 border-black select-none">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {session?.user?.email && (
+                    <button
+                      onClick={handleSendEmail}
+                      disabled={isSendingEmail}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase text-slate-800 bg-white hover:bg-slate-50 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      {isSendingEmail ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-orange-500" />
+                          <T>Sending...</T>
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-3.5 h-3.5 text-emerald-600" />
+                          <T>Email Report</T>
+                        </>
+                      )}
+                    </button>
+                  )}
+                  <div className="flex bg-slate-100 dark:bg-zinc-900 p-1 rounded-full border-2 border-black select-none">
                   {(["diagnosis", "cures", "timeline"] as TabType[]).map((tab) => (
                     <button
                       key={tab}
@@ -278,7 +428,8 @@ export default function DiseaseDiagnosticsPage() {
                     </button>
                   ))}
                 </div>
-              )}
+              </div>
+            )}
             </CardHeader>
 
             <CardContent className="p-4 grow flex flex-col justify-center">

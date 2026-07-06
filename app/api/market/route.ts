@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       throw new Error("GEMINI_API_KEY is not configured");
     }
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
     // 2. Prompt Gemini for real-time market data
     const prompt = `
