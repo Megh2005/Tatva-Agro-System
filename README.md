@@ -28,9 +28,9 @@ Making crop insurance, farm monitoring, government schemes, and AI-driven agricu
 ![Status](https://img.shields.io/badge/Status-Active%20Development-yellow?style=for-the-badge)
 ![Farmers First](https://img.shields.io/badge/Design-Farmer%20First-2E8B57?style=for-the-badge)
 
-<img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="140">
-<img src="https://media.giphy.com/media/xUOxfhqcbaWFtGxNIA/giphy.gif" width="140">
-<img src="https://media.giphy.com/media/3o7TKz2bT5oVXWKzva/giphy.gif" width="140">
+<img src="assets/anim-rainfall.svg" width="140" alt="Rainfall animation">
+<img src="assets/anim-growth.svg" width="140" alt="Crop growth cycle animation">
+<img src="assets/anim-harvest.svg" width="140" alt="Harvest animation">
 
 </div>
 
@@ -44,35 +44,6 @@ Making crop insurance, farm monitoring, government schemes, and AI-driven agricu
 [![Technical](https://img.shields.io/badge/⚙️-Technical%20Perspective-2E8B57?style=flat-square)](#technical-perspective)
 [![Business](https://img.shields.io/badge/💼-Business%20Perspective-2E8B57?style=flat-square)](#business-perspective)
 [![Vision](https://img.shields.io/badge/🚀-Vision-2E8B57?style=flat-square)](#vision)
-
-</div>
-
----
-
-<div align="center">
-
-```mermaid
-flowchart LR
-    A["👨‍🌾 Farmer Onboarding"] --> B["🛰️ Environmental & Soil Intelligence"]
-    B --> C["🧠 Gemini AI Reasoning Core"]
-    C --> D["🌱 Crop Recommendation"]
-    C --> E["🩺 Crop Health Diagnosis"]
-    C --> F["📈 Yield & Market Forecasting"]
-    C --> G["🌸 Floriculture Planning"]
-    C --> H["🛡️ Insurance Verification"]
-    C --> I["🔔 Autonomous Alerts"]
-    D --> J["🗣️ Voice & Multilingual Delivery"]
-    E --> J
-    F --> J
-    G --> J
-    H --> J
-    I --> J
-    J --> K["📱 Farmer Dashboard"]
-
-    style A fill:#DFF5E1,stroke:#2E8B57,stroke-width:2px
-    style C fill:#CDEAC0,stroke:#1e5631,stroke-width:3px
-    style K fill:#DFF5E1,stroke:#2E8B57,stroke-width:2px
-```
 
 </div>
 
