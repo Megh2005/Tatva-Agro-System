@@ -29,6 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="apple-touch-icon"
+          href="https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2010_07_23%20AM.png"
+        />
+      </head>
       <body className={`${notoserif.className} relative`}>
         <ThemeProvider
           attribute="class"
