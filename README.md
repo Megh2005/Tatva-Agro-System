@@ -2,7 +2,7 @@
 
 <img src="assets/rice-field-hero.svg" width="100%" alt="Rice field swaying in the wind" />
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=26&duration=2500&pause=900&color=2E8B57&center=true&vCenter=true&multiline=true&repeat=true&width=900&height=90&lines=Technology+Assisted+Training+for+Versatile+Agriculture;Satellite+Intelligence+%2B+AI+%2B+Farmer-First+Design;From+Land+Registration+to+Harvest+%E2%80%94+One+Unified+Platform" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=2500&pause=900&color=2E8B57&center=true&vCenter=true&multiline=true&repeat=true&width=900&height=130&lines=Technology+Assisted+Training+for+Versatile+Agriculture;Satellite+Intelligence+%2B+AI+%2B+Farmer-First+Design;From+Land+Registration+to+Harvest+%E2%80%94+One+Unified+Platform" alt="Typing SVG" />
 
 # 🌾 Tatva Agro System
 
