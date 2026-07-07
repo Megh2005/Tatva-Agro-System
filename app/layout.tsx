@@ -34,6 +34,11 @@ export default function RootLayout({
           rel="apple-touch-icon"
           href="https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2010_07_23%20AM.png"
         />
+        <link
+          rel="shortcut icon"
+          href="https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2012_00_41%20PM.png?updatedAt=1783405888808"
+          type="image/x-icon"
+        />
       </head>
       <body className={`${notoserif.className} relative`}>
         <ThemeProvider

@@ -23,17 +23,19 @@ export default function AuthPage() {
     if (status === "authenticated") {
       const timer = setInterval(() => {
         setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            router.push("/profile");
-            return 0;
-          }
-          return prev - 1;
+          const next = prev <= 1 ? 0 : prev - 1;
+          return next;
         });
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [status, router]);
+  }, [status]);
+
+  useEffect(() => {
+    if (countdown === 0 && status === "authenticated") {
+      router.push("/profile");
+    }
+  }, [countdown, status, router]);
 
   if (status === "authenticated") {
     return (
