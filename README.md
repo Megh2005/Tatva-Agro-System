@@ -1,5 +1,9 @@
 <div align="center">
 
+<img src="assets/rice-field-hero.svg" width="100%" alt="Rice field swaying in the wind" />
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=26&duration=2500&pause=900&color=2E8B57&center=true&vCenter=true&multiline=true&repeat=true&width=900&height=90&lines=Technology+Assisted+Training+for+Versatile+Agriculture;Satellite+Intelligence+%2B+AI+%2B+Farmer-First+Design;From+Land+Registration+to+Harvest+%E2%80%94+One+Unified+Platform" alt="Typing SVG" />
+
 # 🌾 Tatva Agro System
 
 ### AI-Powered Smart Agriculture Platform for Farmers
@@ -19,468 +23,241 @@ Making crop insurance, farm monitoring, government schemes, and AI-driven agricu
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary)
 ![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
+![Made With Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red?style=for-the-badge)
+![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active%20Development-yellow?style=for-the-badge)
+![Farmers First](https://img.shields.io/badge/Design-Farmer%20First-2E8B57?style=for-the-badge)
+
+<img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="140">
+<img src="https://media.giphy.com/media/xUOxfhqcbaWFtGxNIA/giphy.gif" width="140">
+<img src="https://media.giphy.com/media/3o7TKz2bT5oVXWKzva/giphy.gif" width="140">
+
 </div>
 
 ---
 
-# 🌱 About
+### 🧭 Quick Navigation
 
-Tatva Agro System is an AI-enabled precision agriculture ecosystem that empowers farmers with modern digital agriculture tools.
+<div align="center">
 
-The platform combines Artificial Intelligence, Satellite Intelligence, Computer Vision, Government Scheme Assistance, Crop Insurance, Smart Recommendations, and Agricultural Analytics into one seamless experience.
+[![Overview](https://img.shields.io/badge/📖-Overview-2E8B57?style=flat-square)](#tatva--technology-assisted-training-for-versatile-agriculture)
+[![Technical](https://img.shields.io/badge/⚙️-Technical%20Perspective-2E8B57?style=flat-square)](#technical-perspective)
+[![Business](https://img.shields.io/badge/💼-Business%20Perspective-2E8B57?style=flat-square)](#business-perspective)
+[![Vision](https://img.shields.io/badge/🚀-Vision-2E8B57?style=flat-square)](#vision)
 
-Instead of visiting multiple government portals and manually filing claims, farmers can perform every major agricultural activity from one platform.
-
----
-
-# ✨ Key Features
-
-## 🌾 AI Crop Insurance
-
-- AI-powered claim verification
-- Smart fraud detection
-- Crop damage estimation
-- Image verification
-- Landmark validation
-- Farmer selfie verification
-- AI damage assessment
-- Automated insurance workflow
-
----
-
-## 🤖 AI Agriculture Assistant
-
-- Gemini-powered chatbot
-- Multi-language support
-- Farming guidance
-- Fertilizer recommendation
-- Crop disease assistance
-- Weather-based suggestions
-- Government scheme guidance
-
----
-
-## 🛰 Smart Farm Monitoring
-
-- Farm registration
-- GPS location tracking
-- Landmark verification
-- Plot management
-- Farm history
-- Location intelligence
-
----
-## ⚡ Technology Stack
-
-| Category | Technologies |
-|-----------|--------------|
-| Frontend | Next.js 15, React 19, TailwindCSS |
-| Backend | Next.js API Routes |
-| Authentication | NextAuth |
-| AI | Gemini 2.5 Pro |
-| Database | MongoDB Atlas |
-| Storage | Cloudinary |
-| ORM | Mongoose |
-| Language | TypeScript |
-| UI | Shadcn UI |
-| Animation | Framer Motion |
-| Icons | Lucide React |
-
----
-
-## 📊 AI Analytics Dashboard
-
-- Crop statistics
-- Insurance analytics
-- Farm performance
-- Smart insights
-- Claim tracking
-- Progress visualization
-
----
-
-## 📄 Government Schemes
-
-- PM-KISAN
-- PMFBY
-- Soil Health Card
-- KCC
-- State Government Schemes
-- AI eligibility checker
-
----
-
-## 📷 AI Computer Vision
-
-Users upload:
-
-- Farmer Selfie
-- Land Document
-- Crop Damage
-- Entire Land
-- Landmark Image
-
-The AI verifies all uploaded images before processing the insurance claim.
-
----
-
-## 🔒 Secure Authentication
-
-- Google Authentication
-- JWT Sessions
-- Protected Routes
-- Secure APIs
-
----
-
-## ☁ Cloud Storage
-
-- Cloudinary Integration
-- Secure Image Storage
-- Automatic Image Optimization
-
----
-## 🏗 System Architecture
-
-```mermaid
-flowchart TB
-
-A[👨 Farmer]
-
-A --> B[Next.js Frontend]
-
-B --> C[Authentication]
-
-B --> D[Insurance Module]
-
-B --> E[AI Chatbot]
-
-B --> F[Government Schemes]
-
-C --> G[NextAuth]
-
-G --> H[(MongoDB)]
-
-D --> I[Upload Images]
-
-I --> J[Cloudinary]
-
-J --> K[Gemini Vision AI]
-
-K --> L[Damage Assessment]
-
-L --> M[Insurance Verification]
-
-M --> H
-
-E --> N[Gemini API]
-
-N --> O[Agriculture Knowledge]
-
-O --> H
-
-F --> H
-```
-
----
-
-# 📂 Project Structure
-
-```
-Tatva-Agro-System/
-
-│
-
-├── app/
-
-│ ├── dashboard/
-
-│ ├── insurance/
-
-│ ├── chatbot/
-
-│ ├── profile/
-
-│ ├── schemes/
-
-│ ├── api/
-
-│
-
-├── components/
-
-│ ├── UI
-
-│ ├── Dashboard
-
-│ ├── Insurance
-
-│ ├── Chatbot
-
-│
-
-├── models/
-
-├── lib/
-
-├── middleware.ts
-
-├── types/
-
-└── README.md
-
-```
----
-## 🌍 Business Overview
-
-Tatva is an AI-powered smart agriculture platform designed to bridge the gap between farmers, technology, and insurance providers. The platform digitizes land registration, crop monitoring, weather intelligence, and insurance claim processing into a single ecosystem.
-
-Unlike traditional agricultural platforms, Tatva leverages Artificial Intelligence, satellite-assisted monitoring, and secure cloud infrastructure to minimize fraudulent claims while ensuring faster claim settlements for genuine farmers.
-
-The primary objective is to improve transparency, reduce manual verification efforts, and provide timely financial assistance to farmers affected by natural calamities.
-
----
-## 👥 Consumer Section
-
-Tatva serves multiple stakeholders across the agricultural ecosystem.
-
-### 👨‍🌾 Farmers
-- Register agricultural plots digitally.
-- Monitor crop conditions.
-- Receive weather forecasts.
-- Submit insurance claims with AI verification.
-- Track claim approval status.
-
-### 🏛 Government Authorities
-- Monitor insurance claims.
-- Reduce fraudulent applications.
-- Generate district-wise agricultural reports.
-- Improve subsidy distribution.
-
-### 🏢 Insurance Providers
-- Automated claim verification.
-- AI-assisted damage assessment.
-- Faster settlement process.
-- Reduced operational cost.
-
-### 🌱 Agricultural Researchers
-- Crop damage analytics.
-- Weather impact studies.
-- Satellite vegetation monitoring.
-- Regional agricultural insights.
----
-
-## 💰 Revenue Model
-
-Tatva follows a hybrid B2B + B2G + SaaS business model.
-
-| Revenue Stream | Description |
-|---------------|-------------|
-| Government Licensing | Annual deployment for state agriculture departments |
-| Insurance Partnerships | AI claim verification subscription |
-| Enterprise Dashboard | Analytics for agribusiness companies |
-| Premium Farmer Services | Personalized AI recommendations |
-| API Services | Weather and satellite analytics APIs |
-| Data Insights | Anonymous agricultural reports for research organizations |
-
-Future monetization may also include IoT integrations, drone monitoring subscriptions, and AI-powered crop advisory services.
-
----
-## 📈 Marketing & Scaling Strategy
-
-### Phase 1
-- Pilot deployment in selected districts.
-- Partner with local farmer cooperatives.
-- Collaborate with agricultural universities.
-
-### Phase 2
-- Government partnerships under PMFBY.
-- Insurance company integration.
-- Regional language support.
-
-### Phase 3
-- Nationwide deployment.
-- Mobile application launch.
-- AI-powered farming assistant.
-- International expansion to developing agricultural economies.
----
-## ❤️ Customer Retention
-
-Tatva focuses on long-term farmer engagement through continuous value delivery.
-
-- Personalized crop recommendations.
-- Seasonal weather alerts.
-- Insurance renewal reminders.
-- AI-powered disease detection.
-- Historical crop analytics.
-- Loyalty rewards for consistent usage.
-- Community discussion forums.
-- Regional language support.
----
-## 🎯 Value Proposition
-
-### Farmers
-
-- Faster insurance processing
-- Accurate weather updates
-- Secure land registration
-- AI-assisted crop monitoring
-
-### Government
-
-- Transparent subsidy management
-- Reduced fraud
-- Digital agricultural records
-
-### Insurance Companies
-
-- Lower verification costs
-- Automated fraud detection
-- Faster settlements
-
-### Society
-
-- Improved food security
-- Digital agriculture ecosystem
-- Better disaster response
-
----
-# 📦 Installation
-
-Clone the repository
-
-```bash
-git clone https://github.com/Megh2005/Tatva-Agro-System.git
-```
-
-Go inside the project
-
-```bash
-cd Tatva-Agro-System
-```
-
-Install dependencies
-
-```bash
-pnpm install
-```
-
-Run development server
-
-```bash
-pnpm dev
-```
-
----
-
-# ⚙ Environment Variables
-
-Create
-
-```
-.env.local
-```
-
-```env
-MONGODB_URI=
-
-GOOGLE_CLIENT_ID=
-
-GOOGLE_CLIENT_SECRET=
-
-NEXTAUTH_SECRET=
-
-NEXTAUTH_URL=
-
-GEMINI_API_KEY=
-
-CLOUDINARY_CLOUD_NAME=
-
-CLOUDINARY_API_KEY=
-
-CLOUDINARY_API_SECRET=
-```
-
----
-## ♿ Accessibility
-
-Tatva aims to make digital agriculture accessible to every farmer.
-
-Current Features
-
-- Responsive mobile interface
-- Large touch-friendly buttons
-- High contrast UI
-- Simple navigation
-- Google Authentication
-- Error validation
-- AI-assisted text enhancement
-
-Future Improvements
-
-- Voice navigation
-- Regional language support
-- Screen reader compatibility
-- Offline mode
-- Voice-based insurance filing
-- AI chatbot with multilingual support
----
-
-## 🌟 User Experience
-
-Tatva has been designed with simplicity and accessibility as the primary goals.
-
-### Design Principles
-
-- Clean and distraction-free interface.
-- Mobile-first responsive design.
-- Minimal learning curve.
-- One-click authentication.
-- Guided insurance claim process.
-- AI-assisted form completion.
-- Real-time feedback.
-- Modern animations for better engagement.
-
-The interface minimizes technical complexity so that farmers with limited digital literacy can comfortably navigate the platform.
-
-----
-
-## 🌟 Why Tatva?
-
-✔ AI-powered insurance verification
-
-✔ Satellite-assisted crop monitoring
-
-✔ Real-time weather intelligence
-
-✔ Secure Google Authentication
-
-✔ Automated email notifications
-
-✔ Cloud image storage
-
-✔ Smart damage assessment
-
-✔ Modern responsive UI
-
-✔ PMFBY-inspired insurance workflow
-
-✔ End-to-end digital farming ecosystem
-
-----
-
-# 👨‍💻 Developer
-
-**Megh Deb**
-
-GitHub:
-https://github.com/Megh2005
+</div>
 
 ---
 
 <div align="center">
 
-### 🌾 Building the Future of Smart Agriculture with Artificial Intelligence 🌾
+```mermaid
+flowchart LR
+    A["👨‍🌾 Farmer Onboarding"] --> B["🛰️ Environmental & Soil Intelligence"]
+    B --> C["🧠 Gemini AI Reasoning Core"]
+    C --> D["🌱 Crop Recommendation"]
+    C --> E["🩺 Crop Health Diagnosis"]
+    C --> F["📈 Yield & Market Forecasting"]
+    C --> G["🌸 Floriculture Planning"]
+    C --> H["🛡️ Insurance Verification"]
+    C --> I["🔔 Autonomous Alerts"]
+    D --> J["🗣️ Voice & Multilingual Delivery"]
+    E --> J
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+    J --> K["📱 Farmer Dashboard"]
 
+    style A fill:#DFF5E1,stroke:#2E8B57,stroke-width:2px
+    style C fill:#CDEAC0,stroke:#1e5631,stroke-width:3px
+    style K fill:#DFF5E1,stroke:#2E8B57,stroke-width:2px
+```
+
+</div>
+
+---
+
+# TATVA – Technology Assisted Training for Versatile Agriculture
+
+TATVA is an AI driven precision agriculture ecosystem designed to empower Indian farmers through intelligent, data driven decision making across the complete agricultural lifecycle. The platform bridges the gap between advanced agricultural technology and practical farming by combining satellite intelligence, environmental analysis, soil intelligence, computer vision, predictive analytics and multimodal artificial intelligence into a single farmer friendly ecosystem. Rather than exposing complex scientific reports or technical metrics, TATVA transforms sophisticated AI outputs into simple, actionable recommendations that can be understood and implemented by farmers regardless of their educational background or digital literacy. The platform focuses on improving agricultural productivity, profitability, sustainability and financial security while reducing crop losses, optimizing resource utilization and promoting climate resilient farming practices across India.
+
+---
+
+<div align="center">
+
+<img src="assets/rice-field-divider.svg" width="100%" alt="Rice field divider" />
+
+### ⚙️ TECHNICAL PERSPECTIVE
+
+</div>
+
+# TECHNICAL PERSPECTIVE
+
+---
+
+## Problem Statement
+
+Indian agriculture continues to face multiple challenges including unpredictable monsoons, declining soil fertility, climate variability, pest outbreaks, inefficient resource utilization, lack of localized advisory systems, delayed insurance processing and poor access to scientific agricultural knowledge. Most small and marginal farmers still depend on traditional experience instead of environmental intelligence, resulting in lower productivity and higher financial risks. Existing agricultural solutions generally solve isolated problems instead of providing an integrated decision support ecosystem throughout the farming lifecycle.
+
+---
+
+## Solution Overview
+
+TATVA provides an end to end AI powered precision agriculture platform that assists farmers from land registration until harvest and market sale. The platform integrates environmental intelligence, crop planning, disease diagnostics, yield prediction, market forecasting, insurance verification, autonomous alerting, multilingual assistance and floriculture planning into one unified ecosystem. Every recommendation generated by the system is translated into practical guidance using simple language instead of technical reports, enabling farmers to make informed decisions with confidence.
+
+---
+
+## System Architecture
+
+The platform follows a modern cloud native architecture developed using Next.js, React, TypeScript and Node.js. MongoDB serves as the primary database for storing farmer profiles, land registrations, agricultural records and analytical outputs. Authentication is managed through NextAuth.js while the frontend is designed using Tailwind CSS and Shadcn UI to provide a responsive and accessible experience across desktop and mobile devices. The architecture follows modular development principles allowing every AI service to operate independently while remaining tightly integrated within the ecosystem.
+
+<div align="center">
+
+| Layer | Technology |
+|---|---|
+| 🖥️ Frontend | Next.js · React · TypeScript · Tailwind CSS · Shadcn UI |
+| ⚙️ Backend | Node.js |
+| 🗄️ Database | MongoDB |
+| 🔐 Auth | NextAuth.js |
+| 🧠 AI Core | Google Gemini |
+
+</div>
+
+---
+
+## Artificial Intelligence Infrastructure
+
+Artificial Intelligence acts as the foundation of TATVA. Google Gemini 3.5 serves as the primary reasoning engine responsible for contextual understanding, agricultural advisory generation, recommendation synthesis, multilingual content generation and natural language explanations. Instead of producing generic responses, Gemini combines environmental observations, satellite information, soil characteristics, weather intelligence and predictive analytics to generate highly contextual recommendations for farmers.
+
+The AI engine supports natural language understanding, structured reasoning, multimodal image interpretation, contextual recommendation generation, multilingual response generation, agricultural advisory synthesis, document understanding, conversational assistance and explainable artificial intelligence. Every response generated by the platform prioritizes simplicity, clarity and practical implementation instead of scientific complexity.
+
+---
+
+## AI Crop Recommendation Engine
+
+The crop recommendation engine evaluates registered farmland using environmental intelligence, soil characteristics, climatic conditions and localized weather forecasts to identify the most suitable crops for cultivation. Instead of recommending crops solely based on historical practices, the system generates scientifically optimized recommendations that maximize productivity while reducing cultivation risks. Every recommendation is accompanied by a simple explanation that enables farmers to understand why a particular crop has been recommended.
+
+---
+
+## Crop Health Analysis
+
+Farmers can upload crop images directly into the platform for AI powered diagnosis. Computer vision models process uploaded images to detect diseases, nutrient deficiencies and pest infestations during early stages. Following diagnosis, the AI generates a complete week wise treatment roadmap including preventive measures, recovery guidance, cultivation precautions and recommended farming practices. All recommendations are presented using simple language suitable for practical implementation.
+
+---
+
+## Yield Prediction and Market Intelligence
+
+The platform continuously combines environmental observations, crop growth information, historical agricultural records and predictive analytics to estimate expected crop yield. Simultaneously, market intelligence models evaluate historical price patterns, seasonal demand and regional trends to forecast profitable selling opportunities. Farmers receive actionable recommendations regarding harvesting periods and market timing to maximize profitability.
+
+---
+
+## Floriculture Planning Module
+
+TATVA includes a dedicated floriculture planning ecosystem specifically designed for flower cultivation. Farmers can select an existing registered plot together with their preferred flower variety. The AI evaluates environmental suitability, climatic compatibility, soil conditions and expected market opportunities before generating a Flower Suitability Gauge ranging from zero to one hundred. The recommendation is categorized as Highly Recommended, Can Be Cultivated with Proper Care or Not Recommended. The accompanying advisory explains cultivation strategies, expected flowering period, market opportunities and practical precautions using simple farmer friendly language.
+
+---
+
+## AI Insurance Verification
+
+The insurance verification module introduces secure live image validation to eliminate fraudulent crop insurance claims. Farmers capture live evidence directly through the platform while artificial intelligence verifies image authenticity before forwarding claims for further processing. This significantly improves transparency while reducing verification delays for genuine farmers.
+
+---
+
+## Autonomous Alerting Engine
+
+A continuous monitoring engine evaluates weather forecasts, environmental intelligence, crop health observations and agricultural anomalies throughout the cultivation period. Whenever unusual weather conditions, disease risks, irrigation concerns, dry spells or other threats are detected, the platform automatically generates personalized email alerts allowing farmers to take preventive action before severe losses occur.
+
+---
+
+## Voice Intelligence and Multilingual Support
+
+The platform supports voice driven interaction across more than ten Indian languages using speech to text and text to speech technologies. Farmers can interact naturally with the system irrespective of literacy levels. Every AI recommendation can also be delivered through voice output, making agricultural intelligence accessible to a significantly larger rural population.
+
+---
+
+## Educational Assistance
+
+Every major recommendation produced by the AI engine is accompanied by carefully selected YouTube tutorial recommendations. These educational resources allow farmers to visually understand recommended agricultural practices and improve implementation accuracy through practical demonstrations.
+
+---
+
+## Security
+
+Farmer information remains protected through secure authentication, encrypted communication, controlled access management and secure storage practices. The architecture prioritizes privacy while ensuring reliable system performance and scalability.
+
+---
+
+<div align="center">
+
+<img src="assets/rice-field-divider.svg" width="100%" alt="Rice field divider" />
+
+### 💼 BUSINESS PERSPECTIVE
+
+</div>
+
+# BUSINESS PERSPECTIVE
+
+## Elevator Pitch
+
+TATVA is an AI powered precision agriculture ecosystem built specifically for Indian farmers. By combining satellite intelligence, environmental analytics, artificial intelligence, multilingual communication and predictive decision support into a unified platform, TATVA enables farmers to make smarter farming decisions throughout the complete agricultural lifecycle. The platform simplifies advanced agricultural intelligence into practical guidance that improves productivity, profitability and long term sustainability.
+
+---
+
+## Market Opportunity
+
+India possesses one of the world's largest agricultural communities with millions of small and marginal farmers facing increasing environmental uncertainty and market volatility. Rapid digital adoption, expanding rural internet connectivity and government initiatives promoting digital agriculture create an ideal environment for intelligent agricultural ecosystems. TATVA addresses this opportunity by delivering accessible, localized and scalable agricultural intelligence specifically designed for Indian farming conditions.
+
+---
+
+## Value Proposition
+
+Unlike traditional agricultural applications that focus on individual services, TATVA delivers an integrated ecosystem where every stage of cultivation is supported by artificial intelligence. Farmers receive assistance from crop selection through disease management, yield estimation, market forecasting, insurance verification, floriculture planning and educational support within a single platform, eliminating fragmentation while simplifying agricultural decision making.
+
+---
+
+## Revenue Model
+
+The platform follows a diversified revenue strategy centered around sustainable long term growth. Revenue opportunities include premium subscription services, institutional licensing, agricultural advisory services, insurance verification partnerships, enterprise integrations, government collaborations, agricultural marketplaces, educational partnerships and API based service offerings while maintaining affordable accessibility for Indian farmers.
+
+---
+
+## Customer Retention Strategy
+
+Farmer retention is achieved through continuous value generation rather than periodic engagement. Personalized recommendations, autonomous agricultural alerts, multilingual communication, educational assistance, seasonal advisory updates, continuous AI improvements and contextual notifications encourage farmers to actively use the platform throughout every cultivation cycle. Trust, simplicity and measurable agricultural improvements remain the primary retention drivers.
+
+---
+
+## Marketing Strategy
+
+TATVA focuses on community driven adoption through agricultural cooperatives, Farmer Producer Organizations, agricultural universities, Krishi Vigyan Kendras, rural entrepreneurship initiatives, digital awareness campaigns, demonstration programs and institutional collaborations. Educational content, real world success stories and farmer centric awareness campaigns establish credibility while encouraging widespread adoption throughout rural India.
+
+---
+
+## Scalability
+
+The modular architecture enables seamless expansion across different Indian states without significant architectural modifications. Support for multilingual communication, localized agricultural intelligence and configurable advisory systems allows the platform to adapt to varying climatic zones, soil conditions and cultivation practices across the country. Future enterprise deployments can extend services to government organizations, insurance providers, agricultural research institutions and large agribusinesses.
+
+---
+
+## Future Roadmap
+
+Future development will focus on Internet of Things integration, real time environmental sensors, smart irrigation automation, drone based crop monitoring, blockchain enabled agricultural traceability, carbon credit estimation, advanced environmental intelligence, expanded floriculture analytics, AI driven government scheme recommendations, predictive financial advisory services, collaborative farmer communities, advanced market intelligence and deeper institutional integrations while preserving the platform's commitment to simplicity, accessibility and farmer first innovation.
+
+---
+
+## Vision
+
+The long term vision of TATVA is to become India's most comprehensive farmer centric agricultural intelligence ecosystem where every farming decision is supported by trustworthy artificial intelligence, localized environmental intelligence and practical recommendations. By making advanced technology understandable and accessible, TATVA aims to strengthen rural livelihoods, improve food security, increase agricultural profitability and accelerate the digital transformation of Indian agriculture.
+
+---
+
+<div align="center">
+
+### ⭐ If TATVA resonates with you, consider starring the repository
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&duration=3000&pause=1000&color=6BBF59&center=true&vCenter=true&width=700&lines=Empowering+Farmers+with+Trustworthy+AI;From+Soil+to+Sale+%E2%80%94+One+Platform;Made+with+%F0%9F%92%9A+for+Indian+Agriculture" alt="Footer Typing SVG" />
+
+<img src="assets/rice-field-hero.svg" width="100%" alt="Rice field swaying in the wind" />
 
 </div>
