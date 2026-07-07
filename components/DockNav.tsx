@@ -6,13 +6,12 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   Home,
-  Map,
+  MapPinned as Map,
   MapPin,
-  Camera,
+  Sprout,
   Bug,
-  TrendingUp,
+  ChartSpline,
   Flower,
-  Store,
   Umbrella,
   User,
   Info,
@@ -20,6 +19,7 @@ import {
   LogIn,
   Menu,
   X,
+  BadgeIndianRupee,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -68,8 +68,8 @@ export default function Navigation() {
     {
       name: "Discoloration",
       shortName: "Discoloration",
-      icon: Camera,
-      iconFilled: Camera,
+      icon: Sprout,
+      iconFilled: Sprout,
       href: "/tools/discolouration",
       show: status === "authenticated",
     },
@@ -84,8 +84,8 @@ export default function Navigation() {
     {
       name: "Yield Predictor",
       shortName: "Yield",
-      icon: TrendingUp,
-      iconFilled: TrendingUp,
+      icon: ChartSpline,
+      iconFilled: ChartSpline,
       href: "/tools/yield",
       show: status === "authenticated",
     },
@@ -100,8 +100,8 @@ export default function Navigation() {
     {
       name: "Market Predictor",
       shortName: "Market",
-      icon: Store,
-      iconFilled: Store,
+      icon: BadgeIndianRupee,
+      iconFilled: BadgeIndianRupee,
       href: "/tools/market",
       show: status === "authenticated",
     },

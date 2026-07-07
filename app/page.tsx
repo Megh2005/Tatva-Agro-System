@@ -28,12 +28,12 @@ export default function Home() {
           <motion.p
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 2.0, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
             className="mx-auto mt-8 capitalize leading-relaxed mb-10 max-w-[50vw] text-xl sm:text-4xl text-slate-600/90 font-medium tracking-tight"
           >
-            Empowering & modernizing Indian farmers with modern{" "}
+            Empowering & modernizing Indian farmers with{" "}
             <span className="font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              technology
+              modern technology
             </span>
           </motion.p>
 
