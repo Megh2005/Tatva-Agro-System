@@ -97,6 +97,12 @@ The platform follows a modern cloud native architecture developed using Next.js,
 
 ---
 
+<div align="center">
+
+<img src="assets/anim-scan.svg" width="100%" alt="Drone and satellite scanning the field" />
+
+</div>
+
 ## Artificial Intelligence Infrastructure
 
 Artificial Intelligence acts as the foundation of TATVA. Google Gemini 3.5 serves as the primary reasoning engine responsible for contextual understanding, agricultural advisory generation, recommendation synthesis, multilingual content generation and natural language explanations. Instead of producing generic responses, Gemini combines environmental observations, satellite information, soil characteristics, weather intelligence and predictive analytics to generate highly contextual recommendations for farmers.
