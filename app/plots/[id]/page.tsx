@@ -289,7 +289,7 @@ export default function PlotDetailsPage({
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&q=${plot.landmark.lat},${plot.landmark.lng}&zoom=17&maptype=satellite`}
+                src={`https://www.google.com/maps/embed/v1/view?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&center=${plot.landmark.lat},${plot.landmark.lng}&zoom=17&maptype=satellite`}
               ></iframe>
             </div>
           </Card>
