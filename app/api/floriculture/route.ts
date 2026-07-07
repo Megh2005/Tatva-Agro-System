@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { plotId, flowerType } = await req.json();
+    const { plotId, flowerType, liveData } = await req.json();
 
     if (!plotId || !flowerType) {
       return NextResponse.json({ error: "Missing plotId or flowerType" }, { status: 400 });
@@ -33,13 +33,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Google API Key is not configured." }, { status: 500 });
     }
 
+    // Use live checked soil moisture, falling back to database if not present
+    const liveMoisture = liveData?.soilMoisture;
+    const dbMoisture = plot.soilData?.moisture;
+    const finalMoisture = liveMoisture !== undefined && liveMoisture !== null ? liveMoisture : dbMoisture;
+    const soilMoistureStr = finalMoisture !== undefined && finalMoisture !== null
+      ? `${finalMoisture.toFixed(0)}% (Real-time Checked)`
+      : "Not measured";
+
+    // Use live checked temperatures, falling back to database if not present
+    const liveSoilTemp = liveData?.soilTemperature;
+    const dbSoilTemp = plot.soilData?.temperature;
+    const finalSoilTemp = liveSoilTemp !== undefined && liveSoilTemp !== null ? liveSoilTemp : dbSoilTemp;
+    const soilTempStr = finalSoilTemp !== undefined && finalSoilTemp !== null
+      ? `${finalSoilTemp.toFixed(0)}°C (Real-time Checked)`
+      : "Not measured";
+
+    const liveAirTemp = liveData?.airTemperature;
+    const airTempStr = liveAirTemp !== undefined && liveAirTemp !== null
+      ? `${liveAirTemp.toFixed(0)}°C (Real-time Checked)`
+      : "Not measured";
+
+    const weatherCondStr = liveData?.weatherCondition
+      ? `${liveData.weatherCondition} (Real-time Checked)`
+      : "Typical seasonal weather";
+
     const systemPrompt = `
 You are an expert Indian floriculture and horticultural planning consultant for the "Tatva" smart farming platform.
 Evaluate if the flower "${flowerType}" is suitable to be cultivated on the following plot:
 - Plot Location: ${plot.city}, ${plot.state}, India (Pincode: ${plot.pincode})
 - Plot Area: ${plot.area} Acres
-- Soil Moisture: ${plot.soilData?.moisture ? plot.soilData.moisture.toFixed(0) + "%" : "Not measured"}
-- Soil Temperature: ${plot.soilData?.temperature ? plot.soilData.temperature.toFixed(0) + "°C" : "Not measured"}
+- Soil Moisture (from Database): ${soilMoistureStr}
+- Soil Temperature (Real-time Checked): ${soilTempStr}
+- Air Temperature (Real-time Checked): ${airTempStr}
+- Weather Condition: ${weatherCondStr}
 - Landmark Geolocation: Lat ${plot.landmark?.lat ?? "N/A"}, Lng ${plot.landmark?.lng ?? "N/A"}
 
 Perform a suitability analysis for growing "${flowerType}" considering typical seasonal weather, soil, and water availability in ${plot.city}, ${plot.state}, India.
@@ -68,7 +95,8 @@ You must return a valid JSON object matching this schema exactly (NO markdown co
   "floweringPeriod": "string: approximate flowering period",
   "profitPotential": "string: expected profit potential",
   "marketDemand": "string: expected market demand",
-  "finalRecommendation": "string: final recommendation"
+  "finalRecommendation": "string: final recommendation",
+  "audioSummary": "string: a complete, comprehensive, single-paragraph plain text summary of the entire analysis. It must compile all details (score, suitability reasons, before planting, care, watering, fertilizer, timeline, and profit potential) into a single natural-sounding, cohesive paragraph, written in simple Hinglish/English. No bullet points or line breaks."
 }
 `;
 

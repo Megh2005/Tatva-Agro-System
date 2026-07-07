@@ -20,6 +20,9 @@ import {
   Calendar,
   AlertCircle,
   Mail,
+  Thermometer,
+  Wind,
+  CloudRain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import BackgroundPattern from "@/components/BackgroundPattern";
@@ -34,10 +37,19 @@ interface Plot {
   city: string;
   pincode: string;
   area: number;
+  landmark?: { lat: number; lng: number };
   soilData?: {
     moisture?: number;
     temperature?: number;
   };
+}
+
+interface LiveData {
+  soilMoisture: number | null;
+  soilTemperature: number | null;
+  airTemperature: number | null;
+  weatherCondition: string | null;
+  humidity: number | null;
 }
 
 interface FloricultureReport {
@@ -54,6 +66,7 @@ interface FloricultureReport {
   profitPotential: string;
   marketDemand: string;
   finalRecommendation: string;
+  audioSummary: string;
 }
 
 const FLOWERS = [
@@ -93,6 +106,9 @@ export default function FloriculturePlannerPage() {
   const [loadingPlots, setLoadingPlots] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [report, setReport] = useState<FloricultureReport | null>(null);
+  const [liveData, setLiveData] = useState<LiveData | null>(null);
+  const [loadingLiveData, setLoadingLiveData] = useState(false);
+  const [liveDataError, setLiveDataError] = useState<string | null>(null);
 
   // Speedometer sweep state from 0
   const [needleAngle, setNeedleAngle] = useState(-90);
@@ -125,11 +141,105 @@ export default function FloriculturePlannerPage() {
       setPlots(data);
       if (data.length > 0) {
         setSelectedPlotId(data[0]._id);
+        // Auto-fetch live data for first plot
+        const firstPlot = data[0];
+        if (firstPlot?.landmark?.lat && firstPlot?.landmark?.lng) {
+          fetchLiveData(firstPlot.landmark.lat, firstPlot.landmark.lng);
+        }
       }
     } catch {
       toast.error("Could not load your registered plots.");
     } finally {
       setLoadingPlots(false);
+    }
+  };
+
+  const fetchLiveData = async (lat: number, lng: number) => {
+    setLiveData(null);
+    setLoadingLiveData(true);
+    setLiveDataError(null);
+    try {
+      const stormKey = process.env.NEXT_PUBLIC_STORMGLASS_API_KEY;
+      const googleKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+
+      const [soilRes, weatherRes] = await Promise.allSettled([
+        stormKey
+          ? fetch(
+              `https://api.stormglass.io/v2/bio/point?lat=${lat}&lng=${lng}&params=soilMoisture,soilTemperature`,
+              { headers: { Authorization: stormKey } }
+            )
+          : Promise.reject("No Stormglass key"),
+        googleKey
+          ? fetch(
+              `https://weather.googleapis.com/v1/currentConditions:lookup?key=${googleKey}&location.latitude=${lat}&location.longitude=${lng}&unitsSystem=METRIC`
+            )
+          : Promise.reject("No Google key"),
+      ]);
+
+      let soilMoisture: number | null = null;
+      let soilTemperature: number | null = null;
+      let airTemperature: number | null = null;
+      let weatherCondition: string | null = null;
+      let humidity: number | null = null;
+
+      if (soilRes.status === "fulfilled") {
+        if (soilRes.value.ok) {
+          const soilJson = await soilRes.value.json();
+          const hour = soilJson.hours?.[0];
+          if (hour) {
+            const rawMoisture = hour.soilMoisture?.sg ?? hour.soilMoisture?.noaa ?? null;
+            if (rawMoisture !== null) {
+              soilMoisture = rawMoisture <= 1.0 ? rawMoisture * 100 : rawMoisture;
+            }
+            soilTemperature = hour.soilTemperature?.sg ?? hour.soilTemperature?.noaa ?? null;
+          }
+        } else {
+          const errText = await soilRes.value.text();
+          console.error(`Stormglass API returned ${soilRes.value.status}:`, errText);
+          if (soilRes.value.status === 402) {
+            setLiveDataError("Quota Exceeded");
+          } else {
+            setLiveDataError(`Error ${soilRes.value.status}`);
+          }
+        }
+      } else {
+        setLiveDataError("No API Key");
+      }
+
+      if (weatherRes.status === "fulfilled") {
+        if (weatherRes.value.ok) {
+          const wJson = await weatherRes.value.json();
+          airTemperature = wJson.temperature?.degrees ?? null;
+          weatherCondition = wJson.weatherCondition?.description?.text ?? null;
+          humidity = wJson.relativeHumidity ?? null;
+        } else {
+          const errText = await weatherRes.value.text();
+          console.error(`Weather API returned ${weatherRes.value.status}:`, errText);
+        }
+      }
+
+      setLiveData({
+        soilMoisture,
+        soilTemperature,
+        airTemperature,
+        weatherCondition,
+        humidity,
+      });
+    } catch (err) {
+      console.error("Live data fetch error:", err);
+      setLiveDataError("Fetch Failed");
+    } finally {
+      setLoadingLiveData(false);
+    }
+  };
+
+  const handlePlotChange = (plotId: string) => {
+    setSelectedPlotId(plotId);
+    setReport(null);
+    setLiveData(null);
+    const plot = plots.find((p) => p._id === plotId);
+    if (plot?.landmark?.lat && plot?.landmark?.lng) {
+      fetchLiveData(plot.landmark.lat, plot.landmark.lng);
     }
   };
 
@@ -150,6 +260,7 @@ export default function FloriculturePlannerPage() {
         body: JSON.stringify({
           plotId: selectedPlotId,
           flowerType: selectedFlower,
+          liveData: liveData ?? undefined,
         }),
       });
 
@@ -366,18 +477,8 @@ export default function FloriculturePlannerPage() {
   const ticks = Array.from({ length: 11 }, (_, i) => i * 10);
   const selectedPlot = plots.find((p) => p._id === selectedPlotId);
 
-  // Compile full text summary for audio playback
-  const speechText = report
-    ? `Suitability Analysis Report for growing ${selectedFlower} on plot ${selectedPlot?.name || "selected plot"}.
-       Score is ${report.score} out of 100. Overall recommendation is ${report.recommendationText}.
-       Explanation: ${report.explanation}.
-       Why it is suitable: ${report.suitabilityWhy}.
-       Before planting steps: ${report.beforePlanting}.
-       Watering: ${report.wateringAdvice}.
-       Fertilizer: ${report.fertilizerAdvice}.
-       Expected duration: ${report.growingDuration}.
-       Market potential: ${report.profitPotential}.`
-    : "";
+  // Use the plain text audio summary returned by the API
+  const speechText = report?.audioSummary || "";
 
   return (
     <div className="min-h-screen pb-32 pt-10 px-4 flex justify-center">
@@ -435,10 +536,7 @@ export default function FloriculturePlannerPage() {
                   <select
                     id="plot-select"
                     value={selectedPlotId}
-                    onChange={(e) => {
-                      setSelectedPlotId(e.target.value);
-                      setReport(null);
-                    }}
+                    onChange={(e) => handlePlotChange(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border-2 border-black font-semibold text-slate-700 bg-white focus:outline-none transition-all text-sm"
                   >
                     {plots.map((p) => (
@@ -449,14 +547,48 @@ export default function FloriculturePlannerPage() {
                   </select>
                 </div>
 
-                {/* Plot Snapshot Info */}
+                 {/* Plot Snapshot Info */}
                 {selectedPlot && (
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1 text-xs">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
                     <p className="font-bold text-slate-700 uppercase tracking-wide text-[10px]">Active Plot Stats</p>
-                    <div className="grid grid-cols-2 gap-2 text-slate-600 font-semibold pt-1">
-                      <div>Moisture: {selectedPlot.soilData?.moisture ? `${selectedPlot.soilData.moisture.toFixed(0)}%` : "N/A"}</div>
-                      <div>Temp: {selectedPlot.soilData?.temperature ? `${selectedPlot.soilData.temperature.toFixed(0)}°C` : "N/A"}</div>
+                    <div className="grid grid-cols-2 gap-2 text-slate-600 font-semibold">
+                      <div>
+                        Moisture (Live):{" "}
+                        <span className="font-extrabold text-slate-900">
+                          {loadingLiveData ? (
+                            <span className="animate-pulse text-orange-500">Checking...</span>
+                          ) : liveDataError ? (
+                            <span className="text-red-500 font-bold">{liveDataError}</span>
+                          ) : liveData?.soilMoisture !== null && liveData?.soilMoisture !== undefined ? (
+                            `${liveData.soilMoisture.toFixed(0)}%`
+                          ) : (
+                            "N/A"
+                          )}
+                        </span>
+                      </div>
+                      <div>
+                        Soil Temp (Live):{" "}
+                        <span className="font-extrabold text-slate-900">
+                          {loadingLiveData ? (
+                            <span className="animate-pulse text-orange-500">Checking...</span>
+                          ) : liveDataError ? (
+                            <span className="text-red-500 font-bold">{liveDataError}</span>
+                          ) : liveData?.soilTemperature !== null && liveData?.soilTemperature !== undefined ? (
+                            `${liveData.soilTemperature.toFixed(0)}°C`
+                          ) : (
+                            "N/A"
+                          )}
+                        </span>
+                      </div>
                     </div>
+                    {liveData?.airTemperature !== null && liveData?.airTemperature !== undefined && (
+                      <div className="text-[10px] text-slate-500 border-t border-slate-200 pt-1.5 flex items-center justify-between">
+                        <span>Weather Temp: {liveData.airTemperature.toFixed(0)}°C</span>
+                        {liveData.weatherCondition && (
+                          <span className="italic capitalize">({liveData.weatherCondition})</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -767,6 +899,8 @@ export default function FloriculturePlannerPage() {
                       </p>
                     </div>
                   </div>
+
+
 
                   {/* YouTube Tutorials */}
                   <YouTubeVideos
