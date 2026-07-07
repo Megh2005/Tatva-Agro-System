@@ -135,7 +135,7 @@ export default function MarketPredictionPage() {
           </h1>
           <p className="mx-auto max-w-[65vw] text-lg sm:text-xl text-slate-500 font-medium tracking-tight mt-1">
             Forecast price trends and estimate{" "}
-            <span className="font-bold bg-linear-to-r from-emerald-650 to-teal-650 bg-clip-text text-transparent">
+            <span className="font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               profitability
             </span>
             .

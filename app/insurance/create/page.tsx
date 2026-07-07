@@ -440,17 +440,19 @@ export default function InsuranceCreatePage() {
     }
     setIsSubmitting(true);
     try {
-      // 1. Upload all 5 base64 images concurrently
-      const uploadPromises = Object.entries(capturedImages).map(async ([key, dataUrl]) => {
-        if (!dataUrl) throw new Error("Missing image");
-        const blob = await (await fetch(dataUrl)).blob();
-        const form = new FormData();
-        form.append("file", blob, `insurance_${key}.jpg`);
-        const uploadRes = await fetch("/api/upload-image", { method: "POST", body: form });
-        if (!uploadRes.ok) throw new Error(`Upload failed for ${key}`);
-        const { secure_url } = await uploadRes.json();
-        return { key, url: secure_url };
-      });
+      // 1. Upload only active photo slots concurrently
+      const activeKeys = PHOTO_SLOTS.map((s) => s.key);
+      const uploadPromises = Object.entries(capturedImages)
+        .filter(([key, dataUrl]) => activeKeys.includes(key as any) && dataUrl !== null)
+        .map(async ([key, dataUrl]) => {
+          const blob = await (await fetch(dataUrl!)).blob();
+          const form = new FormData();
+          form.append("file", blob, `insurance_${key}.jpg`);
+          const uploadRes = await fetch("/api/upload-image", { method: "POST", body: form });
+          if (!uploadRes.ok) throw new Error(`Upload failed for ${key}`);
+          const { secure_url } = await uploadRes.json();
+          return { key, url: secure_url };
+        });
 
       const uploadedResults = await Promise.all(uploadPromises);
       const finalImageUrls: Record<string, string> = {};
