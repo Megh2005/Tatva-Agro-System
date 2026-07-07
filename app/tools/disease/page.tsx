@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import { T } from "@/components/TranslationContext";
 import SpeechButton from "@/components/SpeechButton";
 import YouTubeVideos from "@/components/YouTubeVideos";
+import CameraCapture from "@/components/CameraCapture";
 
 interface PlanStep {
   week: string;
@@ -158,6 +159,13 @@ export default function DiseaseDiagnosticsPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleClearImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setResult(null);
+    setActiveTab("diagnosis");
+  };
+
   const handleSendEmail = async () => {
     if (!session?.user?.email) {
       toast.error("User email not found. Please log in.");
@@ -192,14 +200,11 @@ export default function DiseaseDiagnosticsPage() {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      setResult(null); // Clear previous results
-      setActiveTab("diagnosis");
-    }
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setResult(null);
+    setActiveTab("diagnosis");
   };
 
   const runPhaseSimulation = (phases: string[], callback: () => void) => {
@@ -307,54 +312,11 @@ export default function DiseaseDiagnosticsPage() {
             </CardHeader>
             <CardContent className="p-4">
               <form onSubmit={handleAnalyze} className="space-y-4">
-                <div
-                  className={cn(
-                    "border-2 border-dashed border-black rounded-2xl p-5 text-center cursor-pointer transition-all duration-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]",
-                    previewUrl
-                      ? "bg-emerald-50/30 dark:bg-emerald-950/10"
-                      : "bg-slate-50 hover:bg-slate-100 dark:bg-zinc-900/20 dark:hover:bg-zinc-900/40"
-                  )}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleFileSelect}
-                  />
-
-                  {previewUrl ? (
-                    <div className="space-y-4 flex flex-col items-center">
-                      <div className="relative w-full aspect-video rounded-xl overflow-hidden border-2 border-black shadow-sm">
-                        <Image
-                          src={previewUrl}
-                          alt="Crop sample preview"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
-                        <CheckCircle2 className="w-4 h-4" />
-                        Image Selected
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3 flex flex-col items-center justify-center py-4">
-                      <div className="p-2.5 bg-white dark:bg-zinc-900 rounded-full border border-black shadow-sm">
-                        <UploadCloud className="w-7 h-7 text-slate-500 dark:text-slate-400" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-700 dark:text-slate-350">
-                          Click to upload leaf photo
-                        </p>
-                        <p className="text-[10px] text-slate-450 mt-0.5">
-                          Supports PNG, JPG, JPEG
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <CameraCapture
+                  onCapture={handleFileSelect}
+                  onClear={handleClearImage}
+                  previewUrl={previewUrl}
+                />
 
                 <button
                   type="submit"
