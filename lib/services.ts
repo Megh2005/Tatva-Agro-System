@@ -24,7 +24,7 @@ export async function updateUser(id: string, data: any) {
     const updatedUser = await User.findByIdAndUpdate(
         id,
         { $set: data },
-        { new: true, runValidators: true }
+        { returnDocument: "after", runValidators: true }
     );
     return updatedUser;
 }

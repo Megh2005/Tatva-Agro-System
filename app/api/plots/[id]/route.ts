@@ -66,7 +66,7 @@ export async function PATCH(
         const plot = await Plot.findOneAndUpdate(
             { _id: id, user: session.user.id },
             { $set: { soilData } },
-            { new: true }
+            { returnDocument: "after" }
         );
 
         if (!plot) {

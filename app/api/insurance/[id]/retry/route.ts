@@ -75,7 +75,7 @@ export async function POST(
                         analysisCompletedAt: new Date(),
                     },
                 },
-                { new: true }
+                { returnDocument: "after" }
             );
 
             return NextResponse.json(updatedClaim, { status: 200 });

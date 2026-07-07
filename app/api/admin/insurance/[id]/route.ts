@@ -66,7 +66,7 @@ export async function PATCH(
         const claim = await Insurance.findByIdAndUpdate(
             id,
             { status },
-            { new: true }
+            { returnDocument: "after" }
         );
 
         if (!claim) {
