@@ -6,41 +6,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
 import {
   Pencil,
-  Save,
-  X,
   Map as MapIcon,
-  Building2,
   MapPin,
   User,
   MapPinned,
   Mail,
+  Camera,
 } from "lucide-react";
 import CompleteProfileSheet from "@/components/CompleteProfileSheet";
-import { indianStatesAndCities } from "@/lib/states";
-import { validatePincode } from "@/lib/pincode-validator";
 
 export default function ProfilePage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    state: "",
-    city: "",
-    pincode: "",
-  });
-
-  const availableStates = Object.keys(indianStatesAndCities).sort();
-  const availableCities = formData.state
-    ? (indianStatesAndCities[formData.state] || []).sort()
-    : [];
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [name, setName] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -53,12 +43,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile");
       if (res.ok) {
         const data = await res.json();
-        setFormData({
-          name: data.name || "",
-          state: data.state || "",
-          city: data.city || "",
-          pincode: data.pincode || "",
-        });
+        setName(data.name || "");
         setUserData(data);
       }
     } catch (error) {
@@ -68,11 +53,10 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (session?.user) {
+      setName(session.user.name || "");
       fetchUserData();
     }
   }, [session]);
-
-  const [userData, setUserData] = useState<any>(null);
 
   if (status === "loading") {
     return (
@@ -85,47 +69,60 @@ export default function ProfilePage() {
 
   if (!session?.user) return null;
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+
   const handleSave = async () => {
-    if (!formData.name.trim()) {
+    if (!name.trim()) {
       toast.error("Name cannot be empty");
       return;
     }
 
-    if (formData.state && formData.city && formData.pincode) {
-      const validation = validatePincode(
-        formData.state,
-        formData.city,
-        formData.pincode,
-      );
-      if (!validation.isValid) {
-        toast.error(validation.message || "Invalid Pincode");
-        return;
-      }
-    }
-
     setLoading(true);
     try {
+      let avatarUrl: string | undefined;
+
+      if (avatarFile) {
+        const fd = new FormData();
+        fd.append("file", avatarFile);
+        const uploadRes = await fetch("/api/upload-image", {
+          method: "POST",
+          body: fd,
+        });
+        if (!uploadRes.ok) {
+          const err = await uploadRes.json();
+          throw new Error(err.error || "Avatar upload failed");
+        }
+        const uploaded = await uploadRes.json();
+        avatarUrl = uploaded.secure_url;
+      }
+
       const res = await fetch("/api/profile/update", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.name,
-          state: formData.state,
-          city: formData.city,
-          pincode: formData.pincode,
+          name: name.trim(),
+          ...(avatarUrl ? { avatar: avatarUrl } : {}),
         }),
       });
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Update failed");
-      }
+      if (!res.ok) throw new Error(data.message || "Update failed");
 
       await update();
-
       toast.success("Profile updated successfully!");
       setIsEditing(false);
+      setAvatarFile(null);
+      setAvatarPreview(null);
+      fetchUserData();
     } catch (error: any) {
       toast.error(error.message || "Failed to update profile");
     } finally {
@@ -134,17 +131,20 @@ export default function ProfilePage() {
   };
 
   const handleCancel = () => {
-    setFormData({
-      name: session.user.name || "",
-      state: userData?.state || "",
-      city: userData?.city || "",
-      pincode: userData?.pincode || "",
-    });
+    setName(session.user.name || "");
+    setAvatarFile(null);
+    setAvatarPreview(null);
     setIsEditing(false);
   };
 
+  const currentAvatar =
+    avatarPreview ||
+    (session.user as any).avatar ||
+    session.user.image ||
+    null;
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 ">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <BackgroundPattern />
       <Card className="w-full max-w-4xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rounded-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
         <div className="h-1.5 bg-linear-to-r from-amber-500 via-orange-500 to-emerald-600 w-full" />
@@ -154,45 +154,65 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6 pt-6 px-8">
-          <div className="relative h-24 w-24 overflow-hidden rounded-full border border-slate-200 shadow-md ring-4 ring-orange-500/10 shrink-0">
-            {session.user.image || (session.user as any).avatar ? (
-              <Image
-                src={
-                  session.user.image ||
-                  (session.user as any).avatar ||
-                  "https://robohash.org/placeholder"
-                }
-                alt="Avatar"
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="h-full w-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold text-3xl">
-                {session.user.name?.[0]?.toUpperCase()}
-              </div>
+
+          {/* Avatar */}
+          <div className="relative shrink-0">
+            <div className="relative h-24 w-24 overflow-hidden rounded-full border border-slate-200 shadow-md ring-4 ring-orange-500/10">
+              {currentAvatar ? (
+                <Image
+                  src={currentAvatar}
+                  alt="Avatar"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="h-full w-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold text-3xl">
+                  {session.user.name?.[0]?.toUpperCase()}
+                </div>
+              )}
+            </div>
+            {isEditing && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-orange-500 hover:bg-orange-600 border-2 border-white flex items-center justify-center shadow-md transition-colors duration-200 cursor-pointer"
+                  title="Change avatar"
+                >
+                  <Camera className="h-3.5 w-3.5 text-white" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+              </>
             )}
           </div>
 
           <div className="w-full space-y-5 px-2">
             {isEditing ? (
               <>
+                {/* Full Name — only editable field */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="name"
                     className="text-slate-700 font-semibold text-sm"
                   >
-                    Name
+                    Full Name
                   </Label>
                   <Input
                     id="name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, name: e.target.value }))
-                    }
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your full name"
                     className="border border-black focus-visible:ring-4 focus-visible:ring-orange-500/10 focus-visible:border-orange-500 rounded-xl bg-slate-50/85 h-11 text-sm font-medium text-slate-800 transition-all duration-200"
                   />
                 </div>
 
+                {/* Email — shown read-only for reference */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="email"
@@ -211,90 +231,7 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="state"
-                      className="text-slate-700 font-semibold text-sm"
-                    >
-                      State
-                    </Label>
-                    <select
-                      id="state"
-                      value={formData.state}
-                      onChange={(e) => {
-                        const newState = e.target.value;
-                        setFormData((prev) => ({
-                          ...prev,
-                          state: newState,
-                          city: "", // Reset city when state changes
-                          pincode: "", // Reset pincode when state changes
-                        }));
-                      }}
-                      className="w-full border border-black rounded-xl p-3 bg-slate-50/85 outline-none focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 text-sm font-medium text-slate-800 h-[46px]"
-                    >
-                      <option value="">Select State</option>
-                      {availableStates.map((state) => (
-                        <option key={state} value={state}>
-                          {state}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="city"
-                      className="text-slate-700 font-semibold text-sm"
-                    >
-                      City
-                    </Label>
-                    <select
-                      id="city"
-                      value={formData.city}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          city: e.target.value,
-                          pincode: "",
-                        }))
-                      }
-                      disabled={!formData.state}
-                      className="w-full border border-black rounded-xl p-3 bg-slate-50/85 disabled:bg-slate-100/50 disabled:text-slate-400 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all duration-200 text-sm font-medium text-slate-800 h-[46px]"
-                    >
-                      <option value="">Select City</option>
-                      {availableCities.map((city) => (
-                        <option key={city} value={city}>
-                          {city}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="pincode"
-                      className="text-slate-700 font-semibold text-sm"
-                    >
-                      Pincode
-                    </Label>
-                    <Input
-                      id="pincode"
-                      value={formData.pincode}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          pincode: e.target.value,
-                        }))
-                      }
-                      maxLength={6}
-                      disabled={!formData.city}
-                      className="border border-black focus-visible:ring-4 focus-visible:ring-orange-500/10 focus-visible:border-orange-500 rounded-xl bg-slate-50/85 hover:bg-slate-50/95 h-11 disabled:bg-slate-100/50 disabled:text-slate-400 text-sm font-medium text-slate-800 transition-all duration-200"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-3 pt-2">
                   <button
                     onClick={handleSave}
                     disabled={loading}
@@ -313,10 +250,11 @@ export default function ProfilePage() {
               </>
             ) : (
               <>
+                {/* View mode — Name & Email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors duration-200">
                     <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200/50">
-                      <User className="h-5 w-5 text-slate-650" />
+                      <User className="h-5 w-5 text-slate-500" />
                     </div>
                     <div className="space-y-0.5">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -330,7 +268,7 @@ export default function ProfilePage() {
 
                   <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors duration-200">
                     <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200/50">
-                      <Mail className="h-5 w-5 text-slate-650" />
+                      <Mail className="h-5 w-5 text-slate-500" />
                     </div>
                     <div className="space-y-0.5 min-w-0">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -343,46 +281,40 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* Info Grid Section */}
-                {userData && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {/* Address Fields */}
-                    {(userData.isAddressUpdated ||
-                      (userData.state &&
-                        userData.city &&
-                        userData.pincode)) && (
-                      <>
-                        <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 hover:bg-slate-50 transition-colors duration-200">
-                          <MapIcon className="h-5 w-5 text-slate-400" />
-                          <p className="text-sm font-extrabold text-slate-800 mt-1">
-                            {userData.state}
-                          </p>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                            State
-                          </p>
-                        </div>
-                        <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 hover:bg-slate-50 transition-colors duration-200">
-                          <MapPinned className="h-5 w-5 text-slate-400" />
-                          <p className="text-sm font-extrabold text-slate-800 mt-1">
-                            {userData.city}
-                          </p>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                            City
-                          </p>
-                        </div>
-                        <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 hover:bg-slate-50 transition-colors duration-200">
-                          <MapPin className="h-5 w-5 text-slate-400" />
-                          <p className="text-sm font-extrabold text-slate-800 mt-1">
-                            {userData.pincode}
-                          </p>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                            Pincode
-                          </p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+                {/* Address — read-only, shown only if already set */}
+                {userData &&
+                  (userData.isAddressUpdated ||
+                    (userData.state && userData.city && userData.pincode)) && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 hover:bg-slate-50 transition-colors duration-200">
+                        <MapIcon className="h-5 w-5 text-slate-400" />
+                        <p className="text-sm font-extrabold text-slate-800 mt-1">
+                          {userData.state}
+                        </p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                          State
+                        </p>
+                      </div>
+                      <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 hover:bg-slate-50 transition-colors duration-200">
+                        <MapPinned className="h-5 w-5 text-slate-400" />
+                        <p className="text-sm font-extrabold text-slate-800 mt-1">
+                          {userData.city}
+                        </p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                          City
+                        </p>
+                      </div>
+                      <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center gap-1 hover:bg-slate-50 transition-colors duration-200">
+                        <MapPin className="h-5 w-5 text-slate-400" />
+                        <p className="text-sm font-extrabold text-slate-800 mt-1">
+                          {userData.pincode}
+                        </p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                          Pincode
+                        </p>
+                      </div>
+                    </div>
+                  )}
               </>
             )}
           </div>

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { getUserById, updateUser } from "@/lib/services";
+import { connectToDatabase } from "@/lib/db";
+import User from "@/models/User";
 
 export async function PATCH(req: NextRequest) {
     try {
@@ -17,8 +18,7 @@ export async function PATCH(req: NextRequest) {
         const body = await req.json();
         const { name, avatar } = body;
 
-        // Validate input
-        const updateData: any = {};
+        const updateData: Record<string, any> = {};
 
         if (name !== undefined) {
             if (!name || name.trim().length === 0) {
@@ -30,24 +30,17 @@ export async function PATCH(req: NextRequest) {
             updateData.name = name.trim();
         }
 
-
-
         if (avatar !== undefined) {
             updateData.avatar = avatar;
         }
 
-        const { state, city, pincode } = body;
-        if (state !== undefined) updateData.state = state;
-        if (city !== undefined) updateData.city = city;
-        if (pincode !== undefined) updateData.pincode = pincode;
+        await connectToDatabase();
 
-        // If address fields are updated, set isAddressUpdated to true
-        if (state || city || pincode) {
-            updateData.isAddressUpdated = true;
-        }
-
-        // Update user in database
-        const updatedUser = await updateUser(session.user.id, updateData);
+        const updatedUser = await User.findByIdAndUpdate(
+            session.user.id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        );
 
         if (!updatedUser) {
             return NextResponse.json(
