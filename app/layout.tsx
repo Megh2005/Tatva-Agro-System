@@ -19,7 +19,17 @@ const notoserif = Noto_Serif({
 
 export const metadata: Metadata = {
   title: "Tatva",
-  description: "Tatva",
+  description:
+    "Tatva is an AI-enabled precision agriculture ecosystem that helps farmers make smarter and data driven decisions across the agricultural lifecycle",
+  authors: [{ name: "Team Tropical Coders" }],
+  keywords: [
+    "AI",
+    "Agriculture",
+    "Precision Farming",
+    "TATVA",
+    "India",
+    "Gemini AI",
+  ],
 };
 
 export default function RootLayout({
@@ -39,6 +49,7 @@ export default function RootLayout({
           href="https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2012_00_41%20PM.png?updatedAt=1783405888808"
           type="image/x-icon"
         />
+        <link rel="manifest" href="manifest.json" />
       </head>
       <body className={`${notoserif.className} relative`}>
         <ThemeProvider

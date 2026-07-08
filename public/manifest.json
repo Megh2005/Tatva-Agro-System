@@ -1,0 +1,25 @@
+{
+  "name": "Tatva Agro System",
+  "short_name": "Tatva",
+  "description": "Tatva is an AI-enabled precision agriculture ecosystem that helps farmers make smarter and data-driven decisions across the agricultural lifecycle.",
+  "author": "Team Tropical Coders",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2012_00_41%20PM.png?updatedAt=1783405888808",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2010_07_23%20AM.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
