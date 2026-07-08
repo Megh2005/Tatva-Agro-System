@@ -170,7 +170,79 @@ The crop recommendation engine evaluates registered farmland using environmental
 
 ## Crop Health Analysis
 
-Farmers can upload crop images directly into the platform for AI powered diagnosis. Computer vision models process uploaded images to detect diseases, nutrient deficiencies and pest infestations during early stages. Following diagnosis, the AI generates a complete week wise treatment roadmap including preventive measures, recovery guidance, cultivation precautions and recommended farming practices. All recommendations are presented using simple language suitable for practical implementation.
+Maintaining crop health throughout the cultivation cycle is essential for achieving high productivity and minimizing economic losses. Traditional crop monitoring depends heavily upon manual observation, requiring farmers to inspect individual plants for visible signs of disease, nutrient deficiency, pest infestation, or environmental stress. Such inspections are time-consuming and often identify problems only after significant damage has already occurred.
+
+TATVA addresses this limitation through an intelligent crop health analysis module capable of continuously evaluating crop conditions using computer vision, satellite observations, drone imagery, environmental monitoring, and artificial intelligence.
+
+Rather than assessing individual symptoms in isolation, the platform evaluates crop health as a multidimensional biological system influenced by environmental, nutritional, climatic, and physiological factors. Every observation contributes to a comprehensive understanding of the crop's overall condition.
+
+Visual information obtained from uploaded photographs undergoes sophisticated image preprocessing before analysis. The platform enhances image quality, removes irrelevant background information, standardizes illumination variations, and identifies plant structures suitable for detailed examination. These preprocessing stages improve analytical accuracy while minimizing the influence of inconsistent imaging conditions.
+
+Following image enhancement, computer vision algorithms evaluate numerous visual characteristics including leaf coloration, texture, morphological abnormalities, lesion distribution, chlorosis, necrosis, wilting patterns, canopy uniformity, and growth consistency.
+
+Simultaneously, environmental observations obtained from weather forecasts, soil intelligence, and satellite imagery are incorporated into the analysis. This contextual reasoning enables the platform to distinguish between visually similar conditions resulting from entirely different underlying causes.
+
+For example, leaf yellowing may originate from nitrogen deficiency, excessive irrigation, drought stress, fungal infection, or natural physiological aging. Rather than relying solely on visual appearance, TATVA integrates environmental intelligence to determine the most probable explanation before generating recommendations.
+
+The resulting health assessment provides farmers with a clear understanding of crop condition, identifies emerging risks, estimates severity, recommends corrective actions, and prioritizes interventions according to urgency.
+
+Longitudinal monitoring enables the platform to observe crop development across the entire cultivation season. Instead of producing isolated assessments, TATVA constructs continuous health profiles that reveal evolving trends, allowing preventive interventions before significant productivity losses occur.
+
+---
+
+## AI Disease Detection
+
+Plant diseases represent one of agriculture's most persistent challenges, reducing yields, increasing production costs, and threatening food security across diverse climatic regions. Delayed disease identification frequently results in widespread crop damage that could have been prevented through early intervention.
+
+The AI Disease Detection module combines advanced computer vision with agricultural intelligence to identify plant diseases rapidly, accurately, and consistently.
+
+When farmers upload images of affected crops, the system first performs comprehensive preprocessing operations designed to improve image quality and standardize analytical conditions. Background distractions are minimized, lighting inconsistencies are corrected, image noise is reduced, and regions of interest are isolated for detailed examination.
+
+Following preprocessing, deep learning models analyze visual characteristics associated with numerous plant diseases. Rather than simply matching patterns against static image databases, the system evaluates morphological relationships, lesion structures, discoloration patterns, growth abnormalities, and physiological indicators that collectively distinguish one disease from another.
+
+Disease detection extends beyond visual classification. Environmental intelligence substantially enhances diagnostic accuracy by incorporating weather conditions, humidity levels, seasonal disease prevalence, regional outbreaks, crop growth stage, and historical cultivation records.
+
+For instance, identical visual symptoms may correspond to different diseases depending upon prevailing climatic conditions. By integrating environmental reasoning, TATVA significantly reduces diagnostic ambiguity while improving recommendation reliability.
+
+Upon completing analysis, the platform presents farmers with a comprehensive diagnostic report explaining the identified disease, probable causes, expected progression, potential impact on productivity, recommended treatments, preventive measures, and long-term management strategies.
+
+Rather than encouraging indiscriminate pesticide application, TATVA promotes targeted interventions that minimize environmental impact while maximizing treatment effectiveness.
+
+Future developments will incorporate hyperspectral imaging, molecular diagnostics, federated learning across agricultural institutions, and continuously expanding disease knowledge bases, enabling increasingly accurate identification of emerging plant pathogens.
+
+---
+
+## Yield Prediction System
+
+Predicting agricultural yield before harvest represents one of the most valuable capabilities offered by modern precision agriculture. Accurate yield estimation enables farmers to optimize harvesting schedules, storage planning, transportation logistics, financial management, market participation, and resource allocation.
+
+The TATVA Yield Prediction System employs predictive machine learning models capable of estimating expected crop production using diverse environmental, geographical, biological, and historical information sources.
+
+Rather than relying upon simple statistical averages, yield prediction integrates multiple dimensions of agricultural intelligence.
+
+The prediction process evaluates crop selection, soil fertility, weather forecasts, historical productivity, vegetation health, irrigation availability, nutrient management, disease occurrence, satellite observations, and seasonal environmental conditions.
+
+Each contributing factor influences the final prediction according to its estimated impact on crop productivity.
+
+Historical cultivation records significantly improve predictive performance by enabling machine learning algorithms to identify recurring productivity patterns across multiple growing seasons. The platform learns from previous agricultural outcomes, gradually refining prediction accuracy as additional data becomes available.
+
+Unlike conventional yield estimation methods that provide single numerical outputs without context, TATVA accompanies every prediction with explanatory information describing the major environmental factors influencing productivity.
+
+The system also communicates uncertainty appropriately, recognizing that agricultural forecasting inherently involves environmental variability.
+
+Yield prediction supports numerous downstream decision-making processes throughout the platform.
+
+Market forecasting utilizes production estimates when predicting supply-demand dynamics.
+
+Profit estimation combines expected yield with projected market prices.
+
+Harvest scheduling benefits from anticipated production volumes.
+
+Insurance assessments compare predicted productivity with reported losses.
+
+Government agencies may utilize aggregated predictions for regional agricultural planning and food security assessment.
+
+As climate conditions become increasingly unpredictable, predictive yield estimation will become an indispensable component of resilient agricultural management.
 
 ---
 
