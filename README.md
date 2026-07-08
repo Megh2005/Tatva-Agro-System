@@ -1,3 +1,12 @@
+<p align="center">
+  <img
+    src="https://ik.imagekit.io/tegfbc59i/TATVA/Tatva.jpg"
+    alt="TATVA Banner"
+    width="1200"
+  />
+</p>
+
+
 #  Tatva Agro System
 
 ### AI-Powered Smart Agriculture Platform for Farmers
