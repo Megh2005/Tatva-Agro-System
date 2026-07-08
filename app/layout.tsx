@@ -30,6 +30,13 @@ export const metadata: Metadata = {
     "India",
     "Gemini AI",
   ],
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        { url: "https://tatva.teamdatanexus.xyz/rss.xml", title: "TATVA RSS Feed" }
+      ]
+    }
+  }
 };
 
 export default function RootLayout({
@@ -49,7 +56,8 @@ export default function RootLayout({
           href="https://ik.imagekit.io/tegfbc59i/TATVA/ChatGPT%20Image%20Jul%207,%202026,%2012_00_41%20PM.png?updatedAt=1783405888808"
           type="image/x-icon"
         />
-        <link rel="manifest" href="manifest.json" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="alternate" href="https://tatva.teamdatanexus.xyz/rss.xml" type="application/rss+xml" title="RSS" />
       </head>
       <body className={`${notoserif.className} relative`}>
         <ThemeProvider
