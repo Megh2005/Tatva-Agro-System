@@ -286,6 +286,25 @@ The autonomous alerting engine is one of the platform's most quietly powerful fe
 **Email Alert Delivery and Personalization.** When a risk condition is confirmed, the platform automatically composes and dispatches a personalized email alert to the farmer's registered address. Each email is written in plain, non-technical language and includes a clear description of the detected risk, an assessment of how severe the potential impact could be if no action is taken, and a concrete set of recommended actions appropriate to the situation, such as adjusting irrigation schedules, applying preventive treatment, or harvesting earlier than originally planned. Alerts are deliberately kept concise and actionable rather than data-heavy, since the goal is to prompt timely action rather than require further interpretation. Because the system is tied to each individual plot's registered location and crop type, no two farmers receive identical alerts; the content, urgency, and recommended response are all shaped by that specific farm's conditions. This personalized, always-on email channel effectively gives every farmer on the platform an automated agronomist watching over their fields around the clock, surfacing problems while they are still preventable rather than after they have already caused damage.
 
 ---
+## Intelligent Fraud Detection
+
+Fraudulent insurance claims represent a substantial challenge within agricultural insurance ecosystems. False damage reports, manipulated photographs, duplicate submissions, fabricated evidence, and location inconsistencies not only impose financial losses upon insurers but also delay assistance for legitimate claimants.
+
+TATVA incorporates a dedicated Fraud Detection Engine designed to identify suspicious activities through a combination of computer vision, metadata analysis, environmental intelligence, and behavioral pattern recognition.
+
+The platform performs authenticity verification across multiple dimensions simultaneously. Uploaded images are examined for indications of digital manipulation, compression inconsistencies, duplicated content, artificial editing artifacts, and abnormal visual characteristics commonly associated with fabricated evidence.
+
+Metadata analysis evaluates timestamps, geographical coordinates, device information, image generation history, and environmental consistency. Photographs captured outside registered farmland, reused from previous claims, or exhibiting suspicious metadata inconsistencies receive elevated fraud risk assessments.
+
+Environmental intelligence further strengthens verification reliability. Satellite observations, weather records, seasonal agricultural conditions, and historical cultivation data collectively determine whether reported damage corresponds to observable environmental events. For example, drought-related claims submitted during periods of above-average rainfall may trigger additional verification procedures.
+
+Behavioral analytics introduces another protective layer by identifying unusual claim submission patterns, repeated high-risk activities, or abnormal interaction behaviors that may indicate coordinated fraudulent activity.
+
+Importantly, fraud detection remains supportive rather than punitive. Instead of automatically rejecting suspicious claims, the system prioritizes additional verification while maintaining transparency throughout the evaluation process. This balanced approach protects both insurance providers and genuine farmers while preserving trust in the verification process.
+
+Future developments will incorporate deepfake detection, blockchain-supported evidence authentication, federated fraud intelligence across insurance organizations, and continuously evolving anomaly detection algorithms capable of adapting to emerging fraud techniques.
+
+---
 
 ## Voice Intelligence and Multilingual Support
 
@@ -359,7 +378,30 @@ Unlike traditional agricultural applications that focus on individual services, 
 
 ## Revenue Model
 
-The platform follows a diversified revenue strategy centered around sustainable long term growth. Revenue opportunities include premium subscription services, institutional licensing, agricultural advisory services, insurance verification partnerships, enterprise integrations, government collaborations, agricultural marketplaces, educational partnerships and API based service offerings while maintaining affordable accessibility for Indian farmers.
+Ensuring the long-term sustainability of TATVA requires a carefully balanced commercial strategy that supports continuous technological innovation while maintaining affordability for farmers.
+
+The platform follows a diversified revenue model designed to minimize dependence upon any single income source.
+
+The primary revenue stream originates from subscription-based services offering advanced agricultural intelligence, premium analytical reports, personalized advisory systems, and enhanced decision-support capabilities.
+
+A freemium strategy allows all farmers to access essential agricultural services without financial barriers while reserving specialized enterprise features for premium subscribers.
+
+Additional revenue is generated through institutional collaborations involving insurance companies, agricultural cooperatives, financial institutions, research organizations, government agencies, and agribusiness enterprises.
+
+The insurance verification framework provides opportunities for service-based partnerships with insurance providers seeking efficient claims processing solutions.
+
+Market intelligence services may also support commodity buyers, exporters, distributors, and agricultural marketplaces requiring predictive supply chain information.
+
+Future revenue opportunities include:
+
+* Precision agriculture consulting
+* AI-powered farm management subscriptions
+* Enterprise agricultural analytics
+* API licensing
+* Agricultural data intelligence services
+* Digital marketplace commissions
+
+This diversified strategy ensures long-term financial sustainability while preserving affordability for small and marginal farmers.
 
 ---
 
@@ -411,12 +453,12 @@ These future developments position TATVA as a continuously evolving agricultural
 
 ---
 
-## Future Roadmap
+# Future Roadmap
 
 Future development will focus on Internet of Things integration, real time environmental sensors, smart irrigation automation, drone based crop monitoring, blockchain enabled agricultural traceability, carbon credit estimation, advanced environmental intelligence, expanded floriculture analytics, AI driven government scheme recommendations, predictive financial advisory services, collaborative farmer communities, advanced market intelligence and deeper institutional integrations while preserving the platform's commitment to simplicity, accessibility and farmer first innovation.
 
 ---
-## Community Platform
+# Community Platform
 
 Agriculture has traditionally evolved through shared knowledge, collective experience, and community collaboration. Farmers often learn successful cultivation techniques, disease management strategies, irrigation practices, and market opportunities through discussions with neighboring farming communities. TATVA extends this collaborative tradition into the digital age through its integrated Community Platform.
 
@@ -434,7 +476,7 @@ Future community features may include cooperative marketplaces, collaborative pu
 
 ---
 
-## Conclusion
+# Conclusion
 
 TATVA represents a vision of agriculture where technology empowers farmers rather than replacing them. By combining artificial intelligence, computer vision, satellite intelligence, predictive analytics, environmental monitoring, financial intelligence, and multilingual accessibility into a unified platform, TATVA transforms fragmented agricultural decision-making into an integrated, intelligent, and data-driven experience.
 
