@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 
 export type LanguageCode = "en" | "hi" | "mr" | "ta" | "bn";
 
@@ -33,21 +34,43 @@ const originals = new WeakMap<Text, string>();
 const translatedValues = new WeakSet<Text>();
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { data: session, update: updateSession } = useSession();
   const [language, setLanguageState] = useState<LanguageCode>("en");
   const [loading, setLoading] = useState(false);
   const isUpdatingDOMRef = useRef(false);
 
-  // Load language preference from local storage on mount
+  // Sync language with database when session loaded or updated
   useEffect(() => {
-    const savedLang = localStorage.getItem("tatva_language") as LanguageCode;
-    if (savedLang && SUPPORTED_LANGUAGES.some((l) => l.code === savedLang)) {
-      setLanguageState(savedLang);
+    const sessionLang = session?.user?.language as LanguageCode;
+    if (sessionLang && SUPPORTED_LANGUAGES.some((l) => l.code === sessionLang)) {
+      setLanguageState(sessionLang);
+      localStorage.setItem("tatva_language", sessionLang);
+    } else {
+      const savedLang = localStorage.getItem("tatva_language") as LanguageCode;
+      if (savedLang && SUPPORTED_LANGUAGES.some((l) => l.code === savedLang)) {
+        setLanguageState(savedLang);
+      }
     }
-  }, []);
+  }, [session?.user?.language]);
 
-  const setLanguage = (lang: LanguageCode) => {
+  const setLanguage = async (lang: LanguageCode) => {
     setLanguageState(lang);
     localStorage.setItem("tatva_language", lang);
+
+    if (session?.user) {
+      try {
+        const res = await fetch("/api/profile/update", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ language: lang }),
+        });
+        if (res.ok) {
+          updateSession();
+        }
+      } catch (err) {
+        console.error("Failed to update profile language in DB:", err);
+      }
+    }
   };
 
   const translateTextWithLang = async (text: string, targetLang: LanguageCode): Promise<string> => {

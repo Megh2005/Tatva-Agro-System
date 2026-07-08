@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { transporter } from "@/lib/mailer";
+import { connectToDatabase } from "@/lib/db";
+import User from "@/models/User";
+import { translateEmailContent } from "@/lib/email";
 
 // Email payload interface with additional options
 interface SendMailPayload {
@@ -58,12 +61,25 @@ export async function POST(req: Request) {
             );
         }
 
+        // Connect to DB and fetch recipient's preferred language
+        await connectToDatabase();
+        const recipientEmail = Array.isArray(body.to) ? body.to[0] : body.to;
+        const user = await User.findOne({ email: recipientEmail });
+        const userLang = user?.language || "en";
+
+        // Translate subject and body content if target language is non-English
+        const { subject: transSubject, html: transHtml } = await translateEmailContent(
+            body.subject,
+            body.html,
+            userLang
+        );
+
         // Prepare email options
         const mailOptions = {
             from: `"Tatva Team" <${process.env.SMTP_USER}>`,
             to: body.to,
-            subject: body.subject,
-            html: body.html,
+            subject: transSubject,
+            html: transHtml,
             text: body.text || "This email requires HTML support",
             ...(body.cc && { cc: body.cc }),
             ...(body.bcc && { bcc: body.bcc }),

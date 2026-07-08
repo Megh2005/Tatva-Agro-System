@@ -43,6 +43,7 @@ export const authOptions: NextAuthOptions = {
                 if (dbUser) {
                     token.sub = dbUser._id.toString();
                     token.avatar = dbUser.avatar;
+                    token.language = dbUser.language || "en";
                 }
             }
 
@@ -54,6 +55,7 @@ export const authOptions: NextAuthOptions = {
                     token.name = freshUser.name;
                     token.email = freshUser.email;
                     token.avatar = freshUser.avatar;
+                    token.language = freshUser.language || "en";
                 }
             }
 
@@ -63,6 +65,7 @@ export const authOptions: NextAuthOptions = {
             if (session.user) {
                 session.user.id = token.sub;
                 session.user.avatar = token.avatar;
+                session.user.language = token.language || "en";
             }
             return session;
         },

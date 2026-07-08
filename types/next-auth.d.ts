@@ -8,16 +8,20 @@ declare module "next-auth" {
             id: string;
             /** The user's avatar URL */
             avatar?: string;
+            /** The user's preferred language code */
+            language?: string;
         } & DefaultSession["user"];
     }
 
     interface User {
         avatar?: string;
+        language?: string;
     }
 }
 
 declare module "next-auth/jwt" {
     interface JWT {
         avatar?: string;
+        language?: string;
     }
 }

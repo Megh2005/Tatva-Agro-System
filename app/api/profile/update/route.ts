@@ -16,7 +16,7 @@ export async function PATCH(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { name, avatar } = body;
+        const { name, avatar, language } = body;
 
         const updateData: Record<string, any> = {};
 
@@ -32,6 +32,16 @@ export async function PATCH(req: NextRequest) {
 
         if (avatar !== undefined) {
             updateData.avatar = avatar;
+        }
+
+        if (language !== undefined) {
+            if (!["en", "hi", "mr", "ta", "bn"].includes(language)) {
+                return NextResponse.json(
+                    { message: "Invalid language selection" },
+                    { status: 400 }
+                );
+            }
+            updateData.language = language;
         }
 
         await connectToDatabase();
@@ -56,6 +66,7 @@ export async function PATCH(req: NextRequest) {
                 name: updatedUser.name,
                 email: updatedUser.email,
                 avatar: updatedUser.avatar,
+                language: updatedUser.language,
             },
         });
     } catch (error: any) {
