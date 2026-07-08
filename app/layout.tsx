@@ -57,7 +57,16 @@ export default function RootLayout({
           type="image/x-icon"
         />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="alternate" href="https://tatva.teamdatanexus.xyz/rss.xml" type="application/rss+xml" title="RSS" />
+        <link
+          rel="alternate"
+          href="https://tatva.teamdatanexus.xyz/rss.xml"
+          type="application/rss+xml"
+          title="RSS"
+        />
+        <meta
+          name="google-site-verification"
+          content="y-xZYoW4WF4rukvRjtNmJaj_zu9nXPSGVF3vcR_2qv0"
+        />
       </head>
       <body className={`${notoserif.className} relative`}>
         <ThemeProvider
