@@ -1,4 +1,4 @@
-# 🌾 Tatva Agro System
+#  Tatva Agro System
 
 ### AI-Powered Smart Agriculture Platform for Farmers
 
