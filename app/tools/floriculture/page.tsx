@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import BackgroundPattern from "@/components/BackgroundPattern";
 import SpeechButton from "@/components/SpeechButton";
 import { useTranslation } from "@/components/TranslationContext";
+import { fetchOpenMeteoWeather } from "@/lib/weather";
 import YouTubeVideos from "@/components/YouTubeVideos";
 
 interface Plot {
@@ -160,7 +161,6 @@ export default function FloriculturePlannerPage() {
     setLiveDataError(null);
     try {
       const stormKey = process.env.NEXT_PUBLIC_STORMGLASS_API_KEY;
-      const googleKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
       const [soilRes, weatherRes] = await Promise.allSettled([
         stormKey
@@ -169,11 +169,7 @@ export default function FloriculturePlannerPage() {
               { headers: { Authorization: stormKey } }
             )
           : Promise.reject("No Stormglass key"),
-        googleKey
-          ? fetch(
-              `https://weather.googleapis.com/v1/currentConditions:lookup?key=${googleKey}&location.latitude=${lat}&location.longitude=${lng}&unitsSystem=METRIC`
-            )
-          : Promise.reject("No Google key"),
+        fetchOpenMeteoWeather(lat, lng),
       ]);
 
       let soilMoisture: number | null = null;
@@ -193,28 +189,21 @@ export default function FloriculturePlannerPage() {
             }
             soilTemperature = hour.soilTemperature?.sg ?? hour.soilTemperature?.noaa ?? null;
           }
-        } else {
-          const errText = await soilRes.value.text();
-          console.error(`Stormglass API returned ${soilRes.value.status}:`, errText);
-          if (soilRes.value.status === 402) {
-            setLiveDataError("Quota Exceeded");
-          } else {
-            setLiveDataError(`Error ${soilRes.value.status}`);
-          }
         }
-      } else {
-        setLiveDataError("No API Key");
       }
 
       if (weatherRes.status === "fulfilled") {
-        if (weatherRes.value.ok) {
-          const wJson = await weatherRes.value.json();
-          airTemperature = wJson.temperature?.degrees ?? null;
-          weatherCondition = wJson.weatherCondition?.description?.text ?? null;
-          humidity = wJson.relativeHumidity ?? null;
-        } else {
-          const errText = await weatherRes.value.text();
-          console.error(`Weather API returned ${weatherRes.value.status}:`, errText);
+        const wData = weatherRes.value;
+        airTemperature = wData.current.temperature;
+        weatherCondition = wData.current.weatherDescription;
+        humidity = wData.current.humidity;
+
+        // Fallback soil readings from Open-Meteo if Stormglass unavailable
+        if (soilMoisture === null && wData.soilData?.moisture != null) {
+          soilMoisture = wData.soilData.moisture;
+        }
+        if (soilTemperature === null && wData.soilData?.temperature != null) {
+          soilTemperature = wData.soilData.temperature;
         }
       }
 
@@ -783,7 +772,7 @@ export default function FloriculturePlannerPage() {
 
                       {/* Light-Themed Odometer Scorecard */}
                       <div className="flex flex-col items-center gap-0.5 mt-2">
-                        <div className="px-5 py-1.5 bg-slate-50 border-2 border-slate-200 text-slate-700 font-mono text-xl font-black rounded-lg shadow-inner min-w-[70px] text-center">
+                        <div className="px-5 py-1.5 bg-slate-50 border-2 border-slate-200 text-slate-700 font-mono text-xl font-black rounded-lg shadow-inner min-w-17.5 text-center">
                           {report.score}
                         </div>
                         <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Suitability Index</span>

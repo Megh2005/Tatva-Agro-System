@@ -8,6 +8,7 @@ import BackgroundPattern from "@/components/BackgroundPattern";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { MapPin, PlusSquare, Loader2, Maximize } from "lucide-react";
 import { toast } from "react-toastify";
+import MapPreview from "@/components/map/MapPreview";
 
 export default function MyPlotsPage() {
   const router = useRouter();
@@ -88,15 +89,16 @@ export default function MyPlotsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plots.map((plot) => (
               <Link href={`/plots/${plot._id}`} key={plot._id} className="block group">
-                <Card className="shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl group-hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 group-hover:-translate-y-1 bg-white/90 backdrop-blur-md overflow-hidden flex flex-col h-full">
-                  <div className="h-32 bg-slate-100 relative border-b border-slate-100 overflow-hidden">
-                     {/* Fallback visual, normally could be a static map image via Google Static Maps API */}
-                     <img 
-                       src={`https://maps.googleapis.com/maps/api/staticmap?center=${plot.landmark.lat},${plot.landmark.lng}&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7C${plot.landmark.lat},${plot.landmark.lng}&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`} 
-                       alt="Plot Map"
-                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                       onError={(e) => { e.currentTarget.style.display = 'none' }}
-                     />
+                <Card className="shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl group-hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 group-hover:-translate-y-1 bg-white/90 backdrop-blur-md overflow-hidden flex flex-col h-full border-2 border-black">
+                  <div className="h-36 bg-slate-100 relative border-b border-slate-100 overflow-hidden">
+                    <MapPreview
+                      lat={plot.landmark?.lat}
+                      lng={plot.landmark?.lng}
+                      zoom={14}
+                      height="100%"
+                      interactive={false}
+                      markerTitle={plot.name || plot.landmark?.name}
+                    />
                   </div>
                 <CardHeader className="pb-2">
                   <div className="flex flex-col gap-0.5">

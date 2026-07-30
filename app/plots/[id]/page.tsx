@@ -22,6 +22,12 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 import SpeechButton from "@/components/SpeechButton";
+import MapPreview from "@/components/map/MapPreview";
+import {
+  fetchOpenMeteoWeather,
+  getWmoWeatherInfo,
+  WeatherData,
+} from "@/lib/weather";
 
 export default function PlotDetailsPage({
   params,
@@ -38,8 +44,10 @@ export default function PlotDetailsPage({
   });
 
   const [plot, setPlot] = useState<any>(null);
-  const [weather, setWeather] = useState<any>(null);
   const [soilData, setSoilData] = useState<any>(null);
+  const [weather, setWeather] = useState<WeatherData | { error: true } | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   const CACHE_KEY = `tatva_weather_${id}`;
@@ -113,33 +121,10 @@ export default function PlotDetailsPage({
     forceRefresh = false,
   ) => {
     try {
-      if (!forceRefresh) {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const { timestamp, data } = JSON.parse(cached);
-          if (Date.now() - timestamp < CACHE_EXPIRY) {
-            setWeather(data);
-            return;
-          }
-        }
-      }
-      const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-      const res = await fetch(
-        `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lng}&unitsSystem=METRIC`,
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setWeather(data);
-        localStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({ timestamp: Date.now(), data }),
-        );
-      } else {
-        console.error("Weather API error:", await res.text());
-        setWeather({ error: true });
-      }
+      const data = await fetchOpenMeteoWeather(lat, lng, forceRefresh);
+      setWeather(data);
     } catch (e) {
-      console.error("Weather fetch failed:", e);
+      console.error("Open Meteo Weather fetch failed:", e);
       setWeather({ error: true });
     }
   };
@@ -181,39 +166,17 @@ export default function PlotDetailsPage({
     }
   };
 
-  const tempValue =
-    weather?.temperature?.degrees ??
-    weather?.currentConditions?.temperature?.degrees ??
-    weather?.temperature ??
-    weather?.currentConditions?.temperature ??
-    "--";
+  const isWeatherValid = weather && !("error" in weather);
+  const currentObj = isWeatherValid ? (weather as WeatherData).current : null;
+  const wmoInfo = currentObj ? getWmoWeatherInfo(currentObj.weatherCode, currentObj.isDay) : null;
+  const WeatherIcon = wmoInfo?.LucideIcon || Sun;
 
-  const feelsLikeValue =
-    weather?.feelsLike?.degrees ??
-    weather?.currentConditions?.feelsLike?.degrees ??
-    weather?.feelsLike ??
-    weather?.currentConditions?.feelsLike ??
-    "--";
-
-  const humidityValue =
-    weather?.humidity?.percent ??
-    weather?.currentConditions?.humidity?.percent ??
-    weather?.relativeHumidity ??
-    weather?.currentConditions?.relativeHumidity ??
-    weather?.humidity ??
-    "--";
-
-  const windValue =
-    weather?.windSpeed?.value ??
-    weather?.currentConditions?.windSpeed?.value ??
-    weather?.wind?.speed?.value ??
-    weather?.currentConditions?.wind?.speed?.value ??
-    "--";
-
-  const windDirection =
-    weather?.windDirection?.cardinal ??
-    weather?.currentConditions?.windDirection?.cardinal ??
-    "";
+  const tempValue = currentObj ? Math.round(currentObj.temperature) : "--";
+  const feelsLikeValue = currentObj ? Math.round(currentObj.feelsLike) : "--";
+  const humidityValue = currentObj ? currentObj.humidity : "--";
+  const windValue = currentObj ? Math.round(currentObj.windSpeed) : "--";
+  const windDirection = currentObj ? currentObj.windDirectionCardinal : "";
+  const weatherConditionText = wmoInfo ? wmoInfo.description : "";
 
   if (status === "loading" || isLoading) {
     return (
@@ -267,9 +230,9 @@ export default function PlotDetailsPage({
         </div>
 
         {/* Main Grid: Map (left, large) + Info (right column) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
-          {/* ── Map Card ── spans 2 cols on large screens */}
-          <Card className="lg:col-span-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl bg-white/95 overflow-hidden flex flex-col min-h-[420px]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          {/* ── Map Card ── spans 2 cols on large screens, compact height */}
+          <Card className="lg:col-span-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl bg-white/95 overflow-hidden flex flex-col border-2 border-black">
             <CardHeader className="pb-4 border-b border-slate-100">
               <CardTitle className="text-xl font-bold text-slate-800 flex items-center justify-between tracking-tight">
                 <div className="flex items-center gap-2">
@@ -281,16 +244,15 @@ export default function PlotDetailsPage({
                 </span>
               </CardTitle>
             </CardHeader>
-            <div className="grow w-full relative bg-slate-100">
-              <iframe
-                width="100%"
-                height="100%"
-                style={{ border: 0, minHeight: "380px" }}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/view?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&center=${plot.landmark.lat},${plot.landmark.lng}&zoom=17&maptype=satellite`}
-              ></iframe>
+            <div className="w-full relative bg-slate-100 h-120 min-h-100">
+              <MapPreview
+                lat={plot.landmark.lat}
+                lng={plot.landmark.lng}
+                zoom={17}
+                mapType="satellite"
+                markerTitle={plot.landmark.name || plot.name}
+                height="480px"
+              />
             </div>
           </Card>
 
@@ -412,15 +374,15 @@ export default function PlotDetailsPage({
                    <div className="flex items-center gap-2">
                      <Cloud className="w-5 h-5 text-sky-650" />
                      Live Weather
-                     {weather && !weather.error && (
+                     {isWeatherValid && (
                        <SpeechButton
-                         text={`The current temperature at your farm is ${tempValue} degrees Celsius, which feels like ${feelsLikeValue} degrees Celsius. The relative humidity is ${humidityValue} percent, and the wind speed is ${windValue} kilometers per hour.`}
+                         text={`The current weather condition is ${weatherConditionText}. The temperature at your farm is ${tempValue} degrees Celsius, which feels like ${feelsLikeValue} degrees Celsius. The relative humidity is ${humidityValue} percent, and wind speed is ${windValue} kilometers per hour.`}
                          className="h-7 w-7 p-1 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] rounded-lg ml-1"
                        />
                      )}
                    </div>
                   <span className="text-[9px] uppercase font-bold text-sky-700 bg-sky-50 border border-black px-2.5 py-1 rounded-full shrink-0">
-                    Auto-updates
+                    Open-Meteo
                   </span>
                 </CardTitle>
               </CardHeader>
@@ -429,17 +391,32 @@ export default function PlotDetailsPage({
                   <div className="flex items-center justify-center p-6">
                     <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
                   </div>
-                ) : weather.error ? (
+                ) : "error" in weather ? (
                   <div className="bg-slate-50 border border-black rounded-xl p-4 text-center">
                     <p className="text-sm font-bold text-slate-650">
                       Weather Unavailable
                     </p>
                     <p className="text-xs text-slate-450 mt-1">
-                      Enable the Weather API in Google Cloud Console.
+                      Unable to fetch Open-Meteo weather data.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
+                    {/* Weather Condition Banner */}
+                    {weatherConditionText && (
+                      <div className="bg-sky-50/70 border-2 border-black rounded-xl p-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <WeatherIcon className="h-5 w-5 text-sky-600" />
+                          <span className="text-sm font-bold text-slate-800">
+                            {weatherConditionText}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-extrabold uppercase text-slate-400">
+                          {currentObj?.isDay ? "Daytime" : "Nighttime"}
+                        </span>
+                      </div>
+                    )}
+
                     {/* Temperature Row */}
                     <div className="bg-slate-50/50 border-2 border-black rounded-xl p-4 flex items-center justify-between hover:bg-slate-50 transition-colors duration-200">
                       <div className="flex items-center gap-4">

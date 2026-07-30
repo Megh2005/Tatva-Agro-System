@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { cn } from "@/lib/utils";
+import MapPreview from "@/components/map/MapPreview";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 interface InsuranceClaim {
@@ -370,15 +371,14 @@ export default function AdminInsuranceDetailPage() {
 
                     {hasCoordinates ? (
                         <div className="w-full aspect-video rounded-xl overflow-hidden border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                            <iframe 
-                                width="100%" 
-                                height="100%" 
-                                frameBorder="0" 
-                                scrolling="no" 
-                                marginHeight={0} 
-                                marginWidth={0} 
-                                src={`https://maps.google.com/maps?q=${claim.plotSnapshot.landmark.lat},${claim.plotSnapshot.landmark.lng}&t=k&z=17&output=embed`}
-                            ></iframe>
+                            <MapPreview
+                                lat={claim.plotSnapshot.landmark.lat!}
+                                lng={claim.plotSnapshot.landmark.lng!}
+                                zoom={16}
+                                mapType="satellite"
+                                markerTitle={claim.plotSnapshot.landmark.name || claim.plotSnapshot.name}
+                                height="100%"
+                            />
                         </div>
                     ) : (
                         <div className="py-12 flex flex-col items-center justify-center bg-slate-50 rounded-xl border-2 border-dashed border-slate-300">
